@@ -1225,6 +1225,22 @@ class DropboxClient
     Dropbox::parse_response(response)
   end
 
+  # Download a PDF or HTML preview for a file.
+  #
+  # Arguments:
+  # * path: The path to the file to be previewed.
+  # * rev: Optional. The revision of the file to retrieve the metadata for.
+  #   If omitted, you'll get the most recent version.
+  # Returns:
+  # * The preview data
+  def preview(path, rev=nil)
+    path = "/previews/#{@root}#{format_path(path)}"
+    params = { 'rev' => rev }
+    content_server = true
+    response = @session.do_get path, params, content_server
+    Dropbox::parse_response(response, raw=true)
+  end
+
   # Download a thumbnail for an image.
   #
   # Arguments:
