@@ -1346,9 +1346,8 @@ class DropboxClient
     params = {
       "size" => size
     }
-    headers = nil
     content_server = true
-    @session.do_get path, params, headers, content_server
+    @session.do_get path, params, content_server
   end
   private :thumbnail_impl
 
