@@ -33,6 +33,7 @@ def main
   ['key', 'secret'].each do |field|
     if config[field] == nil || config[field].length == 0
       $stderr.puts "\"#{config_file}\": missing or empty \"#{field}\" field."
+      exit 1
     end
   end
   app_key = config['key']
