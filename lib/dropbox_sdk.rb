@@ -10,11 +10,13 @@ require 'pp'
 module Dropbox # :nodoc:
   API_SERVER = "api.dropbox.com"
   API_CONTENT_SERVER = "api-content.dropbox.com"
+  API_NOTIFY_SERVER = "api-notify.dropbox.com"
   WEB_SERVER = "www.dropbox.com"
 
   SERVERS = {
     :api => API_SERVER,
     :content => API_CONTENT_SERVER,
+    :notify => API_NOTIFY_SERVER,
     :web => WEB_SERVER
   }
 
