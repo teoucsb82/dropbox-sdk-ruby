@@ -301,4 +301,23 @@ class SDKTest < Test::Unit::TestCase
 
     assert_equal(expected, entries)
   end
+
+  def test_longpoll_delta
+    prefix = @test_dir + "delta"
+
+    # Initial cursor has to come from #delta
+    r = @client.delta(nil, prefix)
+    cursor = r['cursor']
+
+    upload(@foo, prefix + "/a.txt")
+    r = @client.longpoll_delta(cursor)
+    assert(r['changes'])
+
+    r = @client.delta(cursor, prefix)
+    cursor = r['cursor']
+
+    # Await timeout
+    r = @client.longpoll_delta(cursor)
+    assert(!r['changes'])
+  end
 end

@@ -1335,6 +1335,32 @@ class DropboxClient
     Dropbox::parse_response(response)
   end
 
+  # Calls the long-poll endpoint which waits for changes on an account. In
+  # conjunction with #delta, this call gives you a low-latency way to monitor
+  # an account for file changes.
+  #
+  # The passed in cursor can only be acquired via a call to #delta
+  #
+  # Arguments:
+  # * +cursor+: A delta cursor as returned from a call to #delta
+  # * +timeout+: An optional integer indicating a timeout, in seconds. The
+  #   default value is 30 seconds, which is also the minimum allowed value. The
+  #   maximum is 480 seconds.
+  #
+  # Returns: A hash with one or two fields.
+  # * +changes+: A boolean value indicating whether new changes are available.
+  # * +backoff+: If present, indicates how many seconds your code should wait
+  #   before calling #longpoll_delta again.
+  def longpoll_delta(cursor, timeout=30)
+    params = {
+      'cursor' => cursor,
+      'timeout' => timeout
+    }
+
+    response = @session.do_get "/longpoll_delta", params, :notify
+    Dropbox::parse_response(response)
+  end
+
   # Download a thumbnail (helper method - don't call this directly).
   #
   # Args:
