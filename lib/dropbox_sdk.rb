@@ -46,6 +46,7 @@ module Dropbox # :nodoc:
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     http.ca_file = Dropbox::TRUSTED_CERT_FILE
+    http.read_timeout = 600
 
     if RUBY_VERSION >= '1.9'
       # SSL protocol and ciphersuite settings are supported strating with version 1.9
