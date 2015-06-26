@@ -2,6 +2,7 @@ require "test/unit"
 require "../lib/dropbox_sdk"
 require "securerandom"
 require "set"
+require "uri"
 
 class SDKTest < Test::Unit::TestCase
 
@@ -13,7 +14,9 @@ class SDKTest < Test::Unit::TestCase
     @foo = "testfiles/foo.txt"
     @frog = "testfiles/Costa Rican Frog.jpg"
     @song = "testfiles/dropbox_song.mp3"
+    @fluff = "https://www.dropbox.com/s/qmocfrco2t0d28o/Fluffbeast.docx"
 
+    @save_url_statuses = ["PENDING", "COMPLETE", "DOWNLOADING"]
     @test_dir = "/Ruby SDK Tests/" + Time.new.strftime("%Y-%m-%d %H.%M.%S") + "/"
   end
 
@@ -300,5 +303,24 @@ class SDKTest < Test::Unit::TestCase
     end
 
     assert_equal(expected, entries)
+  end
+
+  def test_save_url
+    to_path = URI.encode(@test_dir + "fluff.docx")
+    result = @client.save_url(to_path, @fluff)
+
+    assert_includes(@save_url_statuses, result["status"])
+    assert_includes(result, "job")
+  end
+
+  def test_save_url_job
+    to_path = URI.encode(@test_dir + "fluff.docx")
+    save_url = @client.save_url(to_path, @fluff)
+
+    job_id = save_url["job"]
+    result = @client.save_url_job(job_id)
+
+    assert_includes(@save_url_statuses, result["status"])
+
   end
 end

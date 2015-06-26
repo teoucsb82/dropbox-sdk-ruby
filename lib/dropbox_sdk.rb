@@ -1385,6 +1385,41 @@ class DropboxClient
     Dropbox::parse_response(response)
   end
 
+  # Save a file from the specified URL into Dropbox. If the given path already
+  # exists, the file will be renamed to avoid the conflict (e.g. myfile (1).txt).
+  #
+  # Args:
+  # * +to_path+: The path in Dropbox where the file will be saved (e.g. /folder/file.ext).
+  # * +url+: The URL to be fetched.
+  #
+  # Returns:
+  # * A dictionary with a status and job. The status is as defined in the
+  # /save_url_job documentation. The job field gives a job ID that can be used
+  # with the /save_url_job endpoint to check the job's status.
+  # Check https://www.dropbox.com/developers/core/docs#save-url for more info.
+  #     {"status": "PENDING", "job": "PEiuxsfaISEAAAAAAADwzg"}
+  def save_url(to_path, url)
+    params = { 'url' => url }
+
+    response = @session.do_post "/save_url/auto#{to_path}", params
+    Dropbox::parse_response(response)
+  end
+
+  # Check the status of a save URL job.
+  #
+  # Args:
+  # * +job_id+: A job ID returned from /save_url.
+  #
+  # Returns:
+  # *A dictionary with a status field with one of the following values:
+  # PENDING, DOWNLOADING, COMPLETE, FAILED
+  # Check https://www.dropbox.com/developers/core/docs#save-url for more info.
+  #     {"status": "FAILED", "error": "Job timed out"}
+  def save_url_job(job_id)
+    response = @session.do_get "/save_url_job/#{job_id}"
+    Dropbox::parse_response(response)
+  end
+
   #From the oauth spec plus "/".  Slash should not be ecsaped
   RESERVED_CHARACTERS = /[^a-zA-Z0-9\-\.\_\~\/]/  # :nodoc:
 
