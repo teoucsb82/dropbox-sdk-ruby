@@ -10,7 +10,15 @@ require 'pp'
 module Dropbox # :nodoc:
   API_SERVER = "api.dropbox.com"
   API_CONTENT_SERVER = "api-content.dropbox.com"
+  API_NOTIFY_SERVER = "api-notify.dropbox.com"
   WEB_SERVER = "www.dropbox.com"
+
+  SERVERS = {
+    :api => API_SERVER,
+    :content => API_CONTENT_SERVER,
+    :notify => API_NOTIFY_SERVER,
+    :web => WEB_SERVER
+  }
 
   API_VERSION = 1
   SDK_VERSION = "1.6.4"
@@ -38,6 +46,7 @@ module Dropbox # :nodoc:
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     http.ca_file = Dropbox::TRUSTED_CERT_FILE
+    http.read_timeout = 600
 
     if RUBY_VERSION >= '1.9'
       # SSL protocol and ciphersuite settings are supported strating with version 1.9
@@ -149,15 +158,15 @@ class DropboxSessionBase # :nodoc:
 
   private
 
-  def build_url(path, content_server)
+  def build_url(path, server)
     port = 443
-    host = content_server ? Dropbox::API_CONTENT_SERVER : Dropbox::API_SERVER
+    host = Dropbox::SERVERS[server]
     full_path = "/#{Dropbox::API_VERSION}#{path}"
     return URI::HTTPS.build({:host => host, :path => full_path})
   end
 
-  def build_url_with_params(path, params, content_server) # :nodoc:
-    target = build_url(path, content_server)
+  def build_url_with_params(path, params, server) # :nodoc:
+    target = build_url(path, server)
     params['locale'] = @locale
     target.query = Dropbox::make_query_string(params)
     return target
@@ -172,10 +181,10 @@ class DropboxSessionBase # :nodoc:
 
   public
 
-  def do_get(path, params=nil, content_server=false)  # :nodoc:
+  def do_get(path, params=nil, server=:api)  # :nodoc:
     params ||= {}
     assert_authorized
-    uri = build_url_with_params(path, params, content_server)
+    uri = build_url_with_params(path, params, server)
     do_http(uri, Net::HTTP::Get.new(uri.request_uri))
   end
 
@@ -201,18 +210,18 @@ class DropboxSessionBase # :nodoc:
     do_http(uri, request)
   end
 
-  def do_post(path, params=nil, headers=nil, content_server=false)  # :nodoc:
+  def do_post(path, params=nil, headers=nil, server=:api)  # :nodoc:
     params ||= {}
     assert_authorized
-    uri = build_url(path, content_server)
+    uri = build_url(path, server)
     params['locale'] = @locale
     do_http_with_body(uri, Net::HTTP::Post.new(uri.request_uri, headers), params)
   end
 
-  def do_put(path, params=nil, headers=nil, body=nil, content_server=false)  # :nodoc:
+  def do_put(path, params=nil, headers=nil, body=nil, server=:api)  # :nodoc:
     params ||= {}
     assert_authorized
-    uri = build_url_with_params(path, params, content_server)
+    uri = build_url_with_params(path, params, server)
     do_http_with_body(uri, Net::HTTP::Put.new(uri.request_uri, headers), body)
   end
 end
@@ -812,8 +821,7 @@ class DropboxClient
     }
 
     headers = {"Content-Type" => "application/octet-stream"}
-    content_server = true
-    response = @session.do_put path, params, headers, file_obj, content_server
+    response = @session.do_put path, params, headers, file_obj, :content
 
     Dropbox::parse_response(response)
   end
@@ -918,8 +926,7 @@ class DropboxClient
               'parent_rev' => parent_rev
     }
     headers = nil
-    content_server = true
-    @session.do_post path, params, headers, content_server
+    @session.do_post path, params, headers, :content
   end
 
   def partial_chunked_upload(data, upload_id=nil, offset=nil)  #:nodoc
@@ -928,8 +935,7 @@ class DropboxClient
       'offset' => offset,
     }
     headers = {'Content-Type' => "application/octet-stream"}
-    content_server = true
-    @session.do_put '/chunked_upload', params, headers, data, content_server
+    @session.do_put '/chunked_upload', params, headers, data, :content
   end
 
   # Download a file
@@ -974,8 +980,7 @@ class DropboxClient
     params = {
       'rev' => rev,
     }
-    content_server = true
-    @session.do_get path, params, content_server
+    @session.do_get path, params, :content
   end
   private :get_file_impl
 
@@ -1236,8 +1241,7 @@ class DropboxClient
   def preview(path, rev=nil)
     path = "/previews/#{@root}#{format_path(path)}"
     params = { 'rev' => rev }
-    content_server = true
-    response = @session.do_get path, params, content_server
+    response = @session.do_get path, params, :content
     Dropbox::parse_response(response, raw=true)
   end
 
@@ -1332,6 +1336,32 @@ class DropboxClient
     Dropbox::parse_response(response)
   end
 
+  # Calls the long-poll endpoint which waits for changes on an account. In
+  # conjunction with #delta, this call gives you a low-latency way to monitor
+  # an account for file changes.
+  #
+  # The passed in cursor can only be acquired via a call to #delta
+  #
+  # Arguments:
+  # * +cursor+: A delta cursor as returned from a call to #delta
+  # * +timeout+: An optional integer indicating a timeout, in seconds. The
+  #   default value is 30 seconds, which is also the minimum allowed value. The
+  #   maximum is 480 seconds.
+  #
+  # Returns: A hash with one or two fields.
+  # * +changes+: A boolean value indicating whether new changes are available.
+  # * +backoff+: If present, indicates how many seconds your code should wait
+  #   before calling #longpoll_delta again.
+  def longpoll_delta(cursor, timeout=30)
+    params = {
+      'cursor' => cursor,
+      'timeout' => timeout
+    }
+
+    response = @session.do_get "/longpoll_delta", params, :notify
+    Dropbox::parse_response(response)
+  end
+
   # Download a thumbnail (helper method - don't call this directly).
   #
   # Args:
@@ -1346,8 +1376,7 @@ class DropboxClient
     params = {
       "size" => size
     }
-    content_server = true
-    @session.do_get path, params, content_server
+    @session.do_get path, params, :content
   end
   private :thumbnail_impl
 
