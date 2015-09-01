@@ -1401,7 +1401,7 @@ class DropboxClient
   def save_url(to_path, url)
     params = { 'url' => url }
 
-    response = @session.do_post "/save_url/auto#{to_path}", params
+    response = @session.do_post "/save_url/auto#{format_path(to_path, true)}", params
     Dropbox::parse_response(response)
   end
 
