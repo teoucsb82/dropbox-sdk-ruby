@@ -8,9 +8,9 @@ require 'securerandom'
 require 'pp'
 
 module Dropbox # :nodoc:
-  API_SERVER = "api.dropbox.com"
-  API_CONTENT_SERVER = "api-content.dropbox.com"
-  API_NOTIFY_SERVER = "api-notify.dropbox.com"
+  API_SERVER = "api.dropboxapi.com"
+  API_CONTENT_SERVER = "content.dropboxapi.com"
+  API_NOTIFY_SERVER = "notify.dropboxapi.com"
   WEB_SERVER = "www.dropbox.com"
 
   SERVERS = {
