@@ -22,9 +22,7 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def teardown
-    unless @test_dir.nil?
-      @client.file_delete(@test_dir) rescue nil
-    end
+    @client.file_delete(@test_dir) rescue nil # already deleted
   end
 
   def hash_has(dict, options={}, *more)
