@@ -1,26 +1,28 @@
 require "test/unit"
-require "../lib/dropbox_sdk"
+require_relative "../lib/dropbox_sdk"
 require "securerandom"
 require "set"
 
 class SDKTest < Test::Unit::TestCase
+
+  def testfile(name)
+    File.expand_path("../testfiles/#{name}", __FILE__)
+  end
 
   # Called before every test method runs. Can be used
   # to set up fixture information.
   def setup
     @client = DropboxClient.new(ENV['DROPBOX_RUBY_SDK_ACCESS_TOKEN'])
 
-    @foo = "testfiles/foo.txt"
-    @frog = "testfiles/Costa Rican Frog.jpg"
-    @song = "testfiles/dropbox_song.mp3"
+    @foo = testfile("foo.txt")
+    @frog = testfile("Costa Rican Frog.jpg")
+    @song = testfile("dropbox_song.mp3")
 
     @test_dir = "/Ruby SDK Tests/" + Time.new.strftime("%Y-%m-%d %H.%M.%S") + "/"
   end
 
   def teardown
-    unless @test_dir.nil?
-      @client.file_delete(@test_dir)
-    end
+    @client.file_delete(@test_dir) rescue nil # already deleted
   end
 
   def hash_has(dict, options={}, *more)

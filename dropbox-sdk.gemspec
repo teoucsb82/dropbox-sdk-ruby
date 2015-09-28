@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.add_dependency "json"
 
   s.add_development_dependency "minitest", "~> 4.3.2"
+  s.add_development_dependency "rake"
   s.add_development_dependency "test-unit"
 
   s.homepage = "http://www.dropbox.com/developers/"
@@ -24,7 +25,7 @@ Gem::Specification.new do |s|
   EOF
 
   s.files = [
-    "CHANGELOG", "LICENSE", "README",
+    "CHANGELOG", "LICENSE", "README", "Rakefile",
     "examples/cli_example.rb", "examples/dropbox_controller.rb", "examples/web_file_browser.rb",
     "examples/copy_between_accounts.rb", "examples/chunked_upload.rb", "examples/oauth1_upgrade.rb",
     "examples/search_cache.rb",
