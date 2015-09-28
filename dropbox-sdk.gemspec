@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest", "~> 4.3.2"
   s.add_development_dependency "rake"
   s.add_development_dependency "test-unit"
+  s.add_development_dependency "test-unit", "~> 3.1.2"
 
   s.homepage = "http://www.dropbox.com/developers/"
   s.summary = "Dropbox REST API Client."
