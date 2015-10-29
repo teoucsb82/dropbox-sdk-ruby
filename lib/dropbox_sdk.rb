@@ -484,7 +484,7 @@ class DropboxOAuth2FlowBase  # :nodoc:
       end
     }
     if j["token_type"] != "bearer" and j["token_type"] != "Bearer"
-      raise DropboxError.new("Bad response from /token: \"token_type\" is \"#{token_type}\".")
+      raise DropboxError.new("Bad response from /token: \"token_type\" is \"#{ j['token_type'] }\".")
     end
 
     return j['access_token'], j['uid']
