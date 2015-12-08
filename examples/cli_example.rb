@@ -141,13 +141,23 @@ class DropboxCLI
   end
 
   def create_copy_ref(command)
-    pp @client.create_copy_ref(command[1])
+    if !command[1] || command[1].empty?
+      puts "please specify item to create copy_ref for"
+    else
+      pp @client.create_copy_ref(command[1])
+    end
   end
 
   def cp_copy_ref(command)
-    src = clean_up(command[2])
-    dest = clean_up(command[1])
-    pp @client.add_copy_ref(src, dest)
+    if !command[1] || command[1].empty?
+      puts "please specify copy_ref of the source item"
+    elsif !command[2] || command[2].empty?
+      puts "please specify Dropbox path to dest, i.e. the file to copy to"
+    else
+      src = clean_up(command[1])
+      dest = clean_up(command[2])
+      pp @client.add_copy_ref(dest, src)
+    end
   end
 
   def cp(command)
