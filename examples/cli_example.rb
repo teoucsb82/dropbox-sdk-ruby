@@ -15,7 +15,7 @@ APP_KEY = ''
 APP_SECRET = ''
 
 class DropboxCLI
-  LOGIN_REQUIRED = %w{put get cp mv rm ls mkdir info logout search thumbnail}
+  LOGIN_REQUIRED = %w{put get create_copy_ref cp_copy_ref cp mv rm ls mkdir info logout search thumbnail}
 
   def initialize
     if APP_KEY == '' or APP_SECRET == ''
@@ -138,6 +138,26 @@ class DropboxCLI
     pp metadata
     open(dest, 'w'){|f| f.write out }
     puts "wrote thumbnail#{dest}."
+  end
+
+  def create_copy_ref(command)
+    if !command[1] || command[1].empty?
+      puts "please specify item to create copy_ref for"
+    else
+      pp @client.create_copy_ref(command[1])
+    end
+  end
+
+  def cp_copy_ref(command)
+    if !command[1] || command[1].empty?
+      puts "please specify copy_ref of the source item"
+    elsif !command[2] || command[2].empty?
+      puts "please specify Dropbox path to dest, i.e. the file to copy to"
+    else
+      src = clean_up(command[1])
+      dest = clean_up(command[2])
+      pp @client.add_copy_ref(dest, src)
+    end
   end
 
   def cp(command)
