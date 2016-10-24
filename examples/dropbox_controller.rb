@@ -27,7 +27,6 @@ APP_KEY = ""
 APP_SECRET = ""
 
 class DropboxController < ApplicationController
-
   def main
     client = get_dropbox_client
     unless client

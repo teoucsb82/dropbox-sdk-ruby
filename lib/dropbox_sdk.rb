@@ -148,7 +148,6 @@ module Dropbox # :nodoc:
 end
 
 class DropboxSessionBase # :nodoc:
-
   attr_writer :locale
 
   def initialize(locale)
@@ -229,7 +228,6 @@ end
 # and request an access token, an authorize url, and get an access token.  You just need to pass it to
 # DropboxClient after its been authorized.
 class DropboxSession < DropboxSessionBase  # :nodoc:
-
   # * consumer_key - Your Dropbox application's "app key".
   # * consumer_secret - Your Dropbox application's "app secret".
   def initialize(consumer_key, consumer_secret, locale=nil)
@@ -396,7 +394,6 @@ end
 
 
 class DropboxOAuth2Session < DropboxSessionBase  # :nodoc:
-
   def initialize(oauth2_access_token, locale=nil)
     super(locale)
     if not oauth2_access_token.is_a?(String)
@@ -494,7 +491,6 @@ end
 # OAuth 2 authorization helper for apps that can't provide a redirect URI
 # (such as the command line example apps).
 class DropboxOAuth2FlowNoRedirect < DropboxOAuth2FlowBase
-
   # * consumer_key: Your Dropbox API app's "app key"
   # * consumer_secret: Your Dropbox API app's "app secret"
   # * locale: The locale of the user currently using your app.
@@ -522,7 +518,6 @@ end
 
 # The standard OAuth 2 authorization helper.  Use this if you're writing a web app.
 class DropboxOAuth2Flow < DropboxOAuth2FlowBase
-
   # * consumer_key: Your Dropbox API app's "app key"
   # * consumer_secret: Your Dropbox API app's "app secret"
   # * redirect_uri: The URI that the Dropbox server will redirect the user to after the user
@@ -721,7 +716,6 @@ end
 # Use this class to make Dropbox API calls.  You'll need to obtain an OAuth 2 access token
 # first; you can get one using either DropboxOAuth2Flow or DropboxOAuth2FlowNoRedirect.
 class DropboxClient
-
   # Args:
   # * +oauth2_access_token+: Obtained via DropboxOAuth2Flow or DropboxOAuth2FlowNoRedirect.
   # * +locale+: The user's current locale (used to localize error messages).
@@ -1488,5 +1482,4 @@ class DropboxClient
     return URI.escape(path, RESERVED_CHARACTERS) if escape
     path
   end
-
 end

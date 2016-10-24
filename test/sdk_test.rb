@@ -5,7 +5,6 @@ require "set"
 require "uri"
 
 class SDKTest < Test::Unit::TestCase
-
   def testfile(name)
     File.expand_path("../testfiles/#{name}", __FILE__)
   end

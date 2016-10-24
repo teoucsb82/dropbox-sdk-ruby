@@ -2,7 +2,6 @@ require "test/unit"
 require "../lib/dropbox_sdk"
 
 class SSLTest < Test::Unit::TestCase
-
   # Called before every test method runs. Can be used
   # to set up fixture information.
   def setup
