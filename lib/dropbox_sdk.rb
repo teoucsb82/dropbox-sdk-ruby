@@ -829,7 +829,7 @@ class DropboxClient
     #
     # Args:
     # * +chunk_size+: The chunk size for each individual upload.  Defaults to 4MB.
-    def upload(chunk_size = 4*1024*1024)
+    def upload(chunk_size = 4 * 1024 * 1024)
       last_chunk = nil
 
       while @offset < @total_size
@@ -920,7 +920,7 @@ class DropboxClient
   # * The file contents.
   def get_file(from_path, rev = nil)
     response = get_file_impl(from_path, rev)
-    Dropbox::parse_response(response, raw=true)
+    Dropbox::parse_response(response, raw = true)
   end
 
   # Download a file and get its metadata.
@@ -934,7 +934,7 @@ class DropboxClient
   # * The file metadata as a hash.
   def get_file_and_metadata(from_path, rev = nil)
     response = get_file_impl(from_path, rev)
-    parsed_response = Dropbox::parse_response(response, raw=true)
+    parsed_response = Dropbox::parse_response(response, raw = true)
     metadata = parse_metadata(response)
     [parsed_response, metadata]
   end
@@ -1198,7 +1198,7 @@ class DropboxClient
   #   For a detailed description of what this call returns, visit:
   #    https://www.dropbox.com/developers/reference/api#shares
   def shares(path, short_url = true)
-    response = @session.do_get "/shares/#{@root}#{format_path(path)}", 'short_url'=>short_url
+    response = @session.do_get "/shares/#{@root}#{format_path(path)}", 'short_url' => short_url
     Dropbox::parse_response(response)
   end
 
@@ -1214,7 +1214,7 @@ class DropboxClient
     path = "/previews/#{@root}#{format_path(path)}"
     params = { 'rev' => rev }
     response = @session.do_get path, params, :content
-    Dropbox::parse_response(response, raw=true)
+    Dropbox::parse_response(response, raw = true)
   end
 
   # Download a thumbnail for an image.
@@ -1230,7 +1230,7 @@ class DropboxClient
   # * The thumbnail data
   def thumbnail(from_path, size = 'large')
     response = thumbnail_impl(from_path, size)
-    Dropbox::parse_response(response, raw=true)
+    Dropbox::parse_response(response, raw = true)
   end
 
   # Download a thumbnail for an image along with the image's metadata.
@@ -1244,7 +1244,7 @@ class DropboxClient
   # * The metadata for the image as a hash
   def thumbnail_and_metadata(from_path, size = 'large')
     response = thumbnail_impl(from_path, size)
-    parsed_response = Dropbox::parse_response(response, raw=true)
+    parsed_response = Dropbox::parse_response(response, raw = true)
     metadata = parse_metadata(response)
     [parsed_response, metadata]
   end

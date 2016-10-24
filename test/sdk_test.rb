@@ -232,11 +232,11 @@ class SDKTest < Test::Unit::TestCase
 
   def test_chunked_upload
     path = @test_dir + 'chunked_upload_file.txt'
-    size = 1024*1024*10
+    size = 1024 * 1024 * 10
     chunk_size = 4 * 1024 * 1102
 
 
-    random_data = SecureRandom.random_bytes(n=size)
+    random_data = SecureRandom.random_bytes(n = size)
     uploader = @client.get_chunked_uploader(StringIO.new(random_data), size)
     error_count = 0
     while uploader.offset < size && error_count < 5
@@ -276,7 +276,7 @@ class SDKTest < Test::Unit::TestCase
       r = @client.delta(cursor)
       entries = Set.new if r['reset']
       r['entries'].each { |path_lc, md|
-        if path_lc.start_with?(prefix_lc+'/') || path_lc == prefix_lc
+        if path_lc.start_with?(prefix_lc + '/') || path_lc == prefix_lc
           assert(md != nil) # we should never get deletes under 'prefix'
           entries.add path_lc
         end
@@ -295,7 +295,7 @@ class SDKTest < Test::Unit::TestCase
       r = @client.delta(cursor, c)
       entries = Set.new if r['reset']
       r['entries'].each { |path_lc, md|
-        assert path_lc.start_with?(c_lc+'/') || path_lc == c_lc
+        assert path_lc.start_with?(c_lc + '/') || path_lc == c_lc
         assert(md != nil) # we should never get deletes
         entries.add path_lc
       }
