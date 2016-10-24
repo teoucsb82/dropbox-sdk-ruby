@@ -27,7 +27,7 @@ class SDKTest < Test::Unit::TestCase
     @client.file_delete(@test_dir) rescue nil # already deleted
   end
 
-  def hash_has(dict, options={}, *more)
+  def hash_has(dict, options = {}, *more)
     for key in more
       assert(dict.has_key?(key))
     end
@@ -36,7 +36,7 @@ class SDKTest < Test::Unit::TestCase
     end
   end
 
-  def assert_file(file, metadata, options={}, *more)
+  def assert_file(file, metadata, options = {}, *more)
     hash_has(metadata,
              {
                'bytes' => File.size(file),
@@ -51,7 +51,7 @@ class SDKTest < Test::Unit::TestCase
     File.open(filename, 'rb') { |io| io.read }
   end
 
-  def upload(filename, path, overwrite=false, parent_rev=nil)
+  def upload(filename, path, overwrite = false, parent_rev = nil)
     @client.put_file(path, open_binary(filename), overwrite, parent_rev)
   end
 

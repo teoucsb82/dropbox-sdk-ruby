@@ -164,7 +164,7 @@ end
 
 # -------------------------------------------------------------------
 
-def html_page(title, body='')
+def html_page(title, body = '')
   '<html>' +
     "<head><title>#{h title}</title></head>" +
     "<body><h1>#{h title}</h1>#{body}</body>" +
