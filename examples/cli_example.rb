@@ -102,7 +102,7 @@ class DropboxCLI
       #This is where we call the the Dropbox Client
       pp @client.put_file(new_name, open(fname))
     else
-      puts "couldn't find the file #{ fname }"
+      puts "couldn't find the file #{fname}"
     end
   end
 
