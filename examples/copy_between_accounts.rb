@@ -33,7 +33,7 @@ def main()
     command_copy(args)
   else
     warn "ERROR: Unknown command: #{command}"
-    warn "Run with no arguments for help."
+    warn 'Run with no arguments for help.'
     exit(1)
   end
 end
@@ -47,10 +47,10 @@ def command_link(args)
   web_auth = DropboxOAuth2FlowNoRedirect.new(APP_KEY, APP_SECRET)
   authorize_url = web_auth.start()
   puts "1. Go to: #{authorize_url}"
-  puts "2. Click \"Allow\" (you might have to log in first)."
-  puts "3. Copy the authorization code."
+  puts '2. Click "Allow" (you might have to log in first).'
+  puts '3. Copy the authorization code.'
 
-  print "Enter the authorization code here: "
+  print 'Enter the authorization code here: '
   STDOUT.flush
   auth_code = STDIN.gets.strip
 
@@ -91,7 +91,7 @@ end
 
 def command_copy(args)
   if args.size != 3
-    warn "ERROR: \"copy\" takes exactly two arguments"
+    warn 'ERROR: "copy" takes exactly two arguments'
     exit
   end
 
@@ -110,8 +110,8 @@ def command_copy(args)
     exit
   end
 
-  from_uid, from_path = from.split ":"
-  to_uid, to_path = to.split ":"
+  from_uid, from_path = from.split ':'
+  to_uid, to_path = to.split ':'
 
   if (not state.has_key?(to_uid)) || (not state.has_key?(from_uid))
     warn "ERROR: Those UIDs have not linked.  Run #{prog_name} list to see linked UIDs."
@@ -132,7 +132,7 @@ def command_copy(args)
 end
 
 def save_state(state)
-  File.open(STATE_FILE,"w") do |f|
+  File.open(STATE_FILE,'w') do |f|
     f.write(JSON.pretty_generate(state))
   end
 end

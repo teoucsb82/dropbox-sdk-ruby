@@ -8,10 +8,10 @@ require 'securerandom'
 require 'pp'
 
 module Dropbox # :nodoc:
-  API_SERVER = "api.dropboxapi.com"
-  API_CONTENT_SERVER = "content.dropboxapi.com"
-  API_NOTIFY_SERVER = "notify.dropboxapi.com"
-  WEB_SERVER = "www.dropbox.com"
+  API_SERVER = 'api.dropboxapi.com'
+  API_CONTENT_SERVER = 'content.dropboxapi.com'
+  API_NOTIFY_SERVER = 'notify.dropboxapi.com'
+  WEB_SERVER = 'www.dropbox.com'
 
   SERVERS = {
     api: API_SERVER,
@@ -21,7 +21,7 @@ module Dropbox # :nodoc:
   }
 
   API_VERSION = 1
-  SDK_VERSION = "1.6.5"
+  SDK_VERSION = '1.6.5'
 
   TRUSTED_CERT_FILE = File.join(File.dirname(__FILE__), 'trusted-certs.crt')
 
@@ -35,8 +35,8 @@ module Dropbox # :nodoc:
 
   def self.make_query_string(params)
     clean_params(params).collect {|k, v|
-      CGI.escape(k) + "=" + CGI.escape(v)
-    }.join("&")
+      CGI.escape(k) + '=' + CGI.escape(v)
+    }.join('&')
   end
 
   def self.do_http(uri, request) # :nodoc:
@@ -100,7 +100,7 @@ module Dropbox # :nodoc:
     begin
       http.request(request)
     rescue OpenSSL::SSL::SSLError => e
-      raise DropboxError.new("SSL error connecting to Dropbox.  " +
+      raise DropboxError.new('SSL error connecting to Dropbox.  ' +
                              "There may be a problem with the set of certificates in \"#{Dropbox::TRUSTED_CERT_FILE}\".  #{e.message}")
     end
   end
@@ -111,7 +111,7 @@ module Dropbox # :nodoc:
     if response.is_a?(Net::HTTPServerError)
       raise DropboxError.new("Dropbox Server Error: #{response} - #{response.body}", response)
     elsif response.is_a?(Net::HTTPUnauthorized)
-      raise DropboxAuthError.new("User is not authenticated.", response)
+      raise DropboxAuthError.new('User is not authenticated.', response)
     elsif !response.is_a?(Net::HTTPSuccess)
       begin
         d = JSON.parse(response.body)
@@ -192,16 +192,16 @@ class DropboxSessionBase # :nodoc:
         request.set_form_data(Dropbox::clean_params(body))
       elsif body.respond_to?(:read)
         if body.respond_to?(:length)
-          request["Content-Length"] = body.length.to_s
+          request['Content-Length'] = body.length.to_s
         elsif body.respond_to?(:stat) && body.stat.respond_to?(:size)
-          request["Content-Length"] = body.stat.size.to_s
+          request['Content-Length'] = body.stat.size.to_s
         else
           raise ArgumentError, "Don't know how to handle 'body' (responds to 'read' but not to 'length' or 'stat.size')."
         end
         request.body_stream = body
       else
         s = body.to_s
-        request["Content-Length"] = s.length
+        request['Content-Length'] = s.length
         request.body = s
       end
     end
@@ -241,7 +241,7 @@ class DropboxSession < DropboxSessionBase # :nodoc:
   private
 
   def build_auth_header(token) # :nodoc:
-    header = "OAuth oauth_version=\"1.0\", oauth_signature_method=\"PLAINTEXT\", " +
+    header = 'OAuth oauth_version="1.0", oauth_signature_method="PLAINTEXT", ' +
       "oauth_consumer_key=\"#{URI.escape(@consumer_key)}\", "
     if token
       key = URI.escape(token.key)
@@ -275,19 +275,19 @@ class DropboxSession < DropboxSessionBase # :nodoc:
     end
     parts = CGI.parse(response.body)
 
-    if !parts.has_key?("oauth_token") && (parts["oauth_token"].length != 1)
+    if !parts.has_key?('oauth_token') && (parts['oauth_token'].length != 1)
       raise DropboxAuthError.new("Invalid response from #{url_end}: missing \"oauth_token\" parameter: #{response.body}", response)
     end
-    if !parts.has_key?("oauth_token_secret") && (parts["oauth_token_secret"].length != 1)
+    if !parts.has_key?('oauth_token_secret') && (parts['oauth_token_secret'].length != 1)
       raise DropboxAuthError.new("Invalid response from #{url_end}: missing \"oauth_token\" parameter: #{response.body}", response)
     end
 
-    OAuthToken.new(parts["oauth_token"][0], parts["oauth_token_secret"][0])
+    OAuthToken.new(parts['oauth_token'][0], parts['oauth_token_secret'][0])
   end
 
   # This returns a request token.  Requests one from the dropbox server using the provided application key and secret if nessecary.
   def get_request_token()
-    @request_token ||= get_token("/request_token", nil, "Error getting request token.  Is your app key and secret correctly set?")
+    @request_token ||= get_token('/request_token', nil, 'Error getting request token.  Is your app key and secret correctly set?')
   end
 
   # This returns a URL that your user must visit to grant
@@ -338,10 +338,10 @@ class DropboxSession < DropboxSessionBase # :nodoc:
     return @access_token if authorized?
 
     if @request_token.nil?
-      raise RuntimeError.new("No request token. You must set this or get an authorize url first.")
+      raise RuntimeError.new('No request token. You must set this or get an authorize url first.')
     end
 
-    @access_token = get_token("/access_token", @request_token, "Couldn't get access token.")
+    @access_token = get_token('/access_token', @request_token, "Couldn't get access token.")
   end
 
   # If we have an access token, then do nothing.  If not, throw a RuntimeError.
@@ -389,7 +389,7 @@ class DropboxOAuth2Session < DropboxSessionBase # :nodoc:
   def initialize(oauth2_access_token, locale=nil)
     super(locale)
     if not oauth2_access_token.is_a?(String)
-      raise "bad type for oauth2_access_token (expecting String)"
+      raise 'bad type for oauth2_access_token (expecting String)'
     end
     @access_token = oauth2_access_token
   end
@@ -424,17 +424,17 @@ class DropboxOAuth2FlowBase # :nodoc:
 
   def _get_authorize_url(redirect_uri, state)
     params = {
-      "client_id" => @consumer_key,
-      "response_type" => "code",
-      "redirect_uri" => redirect_uri,
-      "state" => state,
-      "locale" => @locale,
+      'client_id' => @consumer_key,
+      'response_type' => 'code',
+      'redirect_uri' => redirect_uri,
+      'state' => state,
+      'locale' => @locale,
     }
 
     host = Dropbox::WEB_SERVER
     path = "/#{Dropbox::API_VERSION}/oauth2/authorize"
 
-    target = URI::Generic.new("https", nil, host, nil, nil, path, nil, nil, nil)
+    target = URI::Generic.new('https', nil, host, nil, nil, path, nil, nil, nil)
     target.query = Dropbox::make_query_string(params)
 
     target.to_s
@@ -443,7 +443,7 @@ class DropboxOAuth2FlowBase # :nodoc:
   # Finish the OAuth 2 authorization process.  If you used a redirect_uri, pass that in.
   # Will return an access token string that you can use with DropboxClient.
   def _finish(code, original_redirect_uri)
-    raise ArgumentError, "code must be a String" if not code.is_a?(String)
+    raise ArgumentError, 'code must be a String' if not code.is_a?(String)
 
     uri = URI.parse("https://#{Dropbox::API_SERVER}/1/oauth2/token")
     request = Net::HTTP::Post.new(uri.request_uri)
@@ -451,10 +451,10 @@ class DropboxOAuth2FlowBase # :nodoc:
     request.add_field('Authorization', 'Basic ' + Base64.encode64(client_credentials).chomp("\n"))
 
     params = {
-      "grant_type" => "authorization_code",
-      "code" => code,
-      "redirect_uri" => original_redirect_uri,
-      "locale" => @locale,
+      'grant_type' => 'authorization_code',
+      'code' => code,
+      'redirect_uri' => original_redirect_uri,
+      'locale' => @locale,
     }
 
     request.set_form_data(Dropbox::clean_params(params))
@@ -462,7 +462,7 @@ class DropboxOAuth2FlowBase # :nodoc:
     response = Dropbox::do_http(uri, request)
 
     j = Dropbox::parse_response(response)
-    ["token_type", "access_token", "uid"].each { |k|
+    ['token_type', 'access_token', 'uid'].each { |k|
       if not j.has_key?(k)
         raise DropboxError.new("Bad response from /token: missing \"#{k}\".")
       end
@@ -470,7 +470,7 @@ class DropboxOAuth2FlowBase # :nodoc:
         raise DropboxError.new("Bad response from /token: field \"#{k}\" is not a string.")
       end
     }
-    if (j["token_type"] != "bearer") && (j["token_type"] != "Bearer")
+    if (j['token_type'] != 'bearer') && (j['token_type'] != 'Bearer')
       raise DropboxError.new("Bad response from /token: \"token_type\" is \"#{ j['token_type'] }\".")
     end
 
@@ -545,12 +545,12 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
   # Returns the URL to redirect the user to.
   def start(url_state=nil)
     unless url_state.nil? || url_state.is_a?(String)
-      raise ArgumentError, "url_state must be a String"
+      raise ArgumentError, 'url_state must be a String'
     end
 
     csrf_token = SecureRandom.base64(16)
     state = csrf_token
-    state += "|" + url_state unless url_state.nil?
+    state += '|' + url_state unless url_state.nil?
     @session[@csrf_token_session_key] = csrf_token
 
     _get_authorize_url(@redirect_uri, state)
@@ -581,7 +581,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
 
     if (not error.nil?) && (not code.nil?)
       raise BadRequestError.new("Query parameters 'code' and 'error' are both set;" +
-                                " only one must be set.")
+                                ' only one must be set.')
     end
     if error.nil? && code.nil?
       raise BadRequestError.new("Neither query parameter 'code' or 'error' is set.")
@@ -590,7 +590,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
     # Check CSRF token
 
     if csrf_token_from_session.nil?
-      raise BadStateError.new("Missing CSRF token in session.");
+      raise BadStateError.new('Missing CSRF token in session.');
     end
     unless csrf_token_from_session.length > 20
       raise RuntimeError.new("CSRF token unexpectedly short: #{csrf_token_from_session.inspect}")
@@ -615,14 +615,14 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
       if error == 'access_denied'
         # The user clicked "Deny"
         if error_description.nil?
-          raise NotApprovedError.new("No additional description from Dropbox.")
+          raise NotApprovedError.new('No additional description from Dropbox.')
         else
           raise NotApprovedError.new("Additional description from Dropbox: #{error_description}")
         end
       else
         # All other errors.
         full_message = error
-        full_message += ": " + error_description if not error_description.nil?
+        full_message += ': ' + error_description if not error_description.nil?
         raise ProviderError.new(full_message)
       end
     end
@@ -703,7 +703,7 @@ class DropboxClient
   # Args:
   # * +oauth2_access_token+: Obtained via DropboxOAuth2Flow or DropboxOAuth2FlowNoRedirect.
   # * +locale+: The user's current locale (used to localize error messages).
-  def initialize(oauth2_access_token, root="auto", locale=nil)
+  def initialize(oauth2_access_token, root='auto', locale=nil)
     if oauth2_access_token.is_a?(String)
       @session = DropboxOAuth2Session.new(oauth2_access_token, locale)
     elsif oauth2_access_token.is_a?(DropboxSession)
@@ -716,13 +716,13 @@ class DropboxClient
 
     @root = root.to_s # If they passed in a symbol, make it a string
 
-    if not ["dropbox","app_folder","auto"].include?(@root)
-      raise ArgumentError.new("root must be :dropbox, :app_folder, or :auto")
+    if not ['dropbox','app_folder','auto'].include?(@root)
+      raise ArgumentError.new('root must be :dropbox, :app_folder, or :auto')
     end
-    if @root == "app_folder"
+    if @root == 'app_folder'
       #App Folder is the name of the access type, but for historical reasons
       #sandbox is the URL root component that indicates this
-      @root = "sandbox"
+      @root = 'sandbox'
     end
   end
 
@@ -732,14 +732,14 @@ class DropboxClient
   # For a detailed description of what this call returns, visit:
   # https://www.dropbox.com/developers/reference/api#account-info
   def account_info()
-    response = @session.do_get "/account/info"
+    response = @session.do_get '/account/info'
     Dropbox::parse_response(response)
   end
 
   # Disables the access token that this +DropboxClient+ is using.  If this call
   # succeeds, further API calls using this object will fail.
   def disable_access_token
-    @session.do_post "/disable_access_token"
+    @session.do_post '/disable_access_token'
     nil
   end
 
@@ -748,10 +748,10 @@ class DropboxClient
   # upgrade your app's existing access tokens from OAuth 1 to OAuth 2.
   def create_oauth2_access_token
     if not @session.is_a?(DropboxSession)
-      raise ArgumentError.new("This call requires a DropboxClient that is configured with " \
-                              "an OAuth 1 access token.")
+      raise ArgumentError.new('This call requires a DropboxClient that is configured with ' \
+                              'an OAuth 1 access token.')
     end
-    response = @session.do_post "/oauth2/token_from_oauth1"
+    response = @session.do_post '/oauth2/token_from_oauth1'
     Dropbox::parse_response(response)['access_token']
   end
 
@@ -795,7 +795,7 @@ class DropboxClient
       'parent_rev' => parent_rev,
     }
 
-    headers = {"Content-Type" => "application/octet-stream"}
+    headers = {'Content-Type' => 'application/octet-stream'}
     response = @session.do_put path, params, headers, file_obj, :content
 
     Dropbox::parse_response(response)
@@ -906,7 +906,7 @@ class DropboxClient
       'upload_id' => upload_id,
       'offset' => offset,
     }
-    headers = {'Content-Type' => "application/octet-stream"}
+    headers = {'Content-Type' => 'application/octet-stream'}
     @session.do_put '/chunked_upload', params, headers, data, :content
   end
 
@@ -991,11 +991,11 @@ class DropboxClient
   #   https://www.dropbox.com/developers/reference/api#fileops-copy
   def file_copy(from_path, to_path)
     params = {
-      "root" => @root,
-      "from_path" => format_path(from_path, false),
-      "to_path" => format_path(to_path, false),
+      'root' => @root,
+      'from_path' => format_path(from_path, false),
+      'to_path' => format_path(to_path, false),
     }
-    response = @session.do_post "/fileops/copy", params
+    response = @session.do_post '/fileops/copy', params
     Dropbox::parse_response(response)
   end
 
@@ -1010,10 +1010,10 @@ class DropboxClient
   #    https://www.dropbox.com/developers/reference/api#fileops-create-folder
   def file_create_folder(path)
     params = {
-      "root" => @root,
-      "path" => format_path(path, false),
+      'root' => @root,
+      'path' => format_path(path, false),
     }
-    response = @session.do_post "/fileops/create_folder", params
+    response = @session.do_post '/fileops/create_folder', params
 
     Dropbox::parse_response(response)
   end
@@ -1029,10 +1029,10 @@ class DropboxClient
   #    https://www.dropbox.com/developers/reference/api#fileops-delete
   def file_delete(path)
     params = {
-      "root" => @root,
-      "path" => format_path(path, false),
+      'root' => @root,
+      'path' => format_path(path, false),
     }
-    response = @session.do_post "/fileops/delete", params
+    response = @session.do_post '/fileops/delete', params
     Dropbox::parse_response(response)
   end
 
@@ -1049,11 +1049,11 @@ class DropboxClient
   #    https://www.dropbox.com/developers/reference/api#fileops-delete
   def file_move(from_path, to_path)
     params = {
-      "root" => @root,
-      "from_path" => format_path(from_path, false),
-      "to_path" => format_path(to_path, false),
+      'root' => @root,
+      'from_path' => format_path(from_path, false),
+      'to_path' => format_path(to_path, false),
     }
-    response = @session.do_post "/fileops/move", params
+    response = @session.do_post '/fileops/move', params
     Dropbox::parse_response(response)
   end
 
@@ -1083,17 +1083,17 @@ class DropboxClient
   #   https://www.dropbox.com/developers/reference/api#metadata
   def metadata(path, file_limit=25_000, list=true, hash=nil, rev=nil, include_deleted=false, include_media_info=false)
     params = {
-      "file_limit" => file_limit.to_s,
-      "list" => list.to_s,
-      "include_deleted" => include_deleted.to_s,
-      "hash" => hash,
-      "rev" => rev,
-      "include_media_info" => include_media_info
+      'file_limit' => file_limit.to_s,
+      'list' => list.to_s,
+      'include_deleted' => include_deleted.to_s,
+      'hash' => hash,
+      'rev' => rev,
+      'include_media_info' => include_media_info
     }
 
     response = @session.do_get "/metadata/#{@root}#{format_path(path)}", params
     if response.kind_of? Net::HTTPRedirection
-      raise DropboxNotModified.new("metadata not modified")
+      raise DropboxNotModified.new('metadata not modified')
     end
     Dropbox::parse_response(response)
   end
@@ -1198,7 +1198,7 @@ class DropboxClient
   #   For a detailed description of what this call returns, visit:
   #    https://www.dropbox.com/developers/reference/api#shares
   def shares(path, short_url=true)
-    response = @session.do_get "/shares/#{@root}#{format_path(path)}", "short_url"=>short_url
+    response = @session.do_get "/shares/#{@root}#{format_path(path)}", 'short_url'=>short_url
     Dropbox::parse_response(response)
   end
 
@@ -1304,7 +1304,7 @@ class DropboxClient
       'path_prefix' => path_prefix,
     }
 
-    response = @session.do_post "/delta", params
+    response = @session.do_post '/delta', params
     Dropbox::parse_response(response)
   end
 
@@ -1328,7 +1328,7 @@ class DropboxClient
       'path_prefix' => path_prefix
     }
 
-    response = @session.do_post "/delta/latest_cursor", params
+    response = @session.do_post '/delta/latest_cursor', params
     Dropbox::parse_response(response)
   end
 
@@ -1354,7 +1354,7 @@ class DropboxClient
       'timeout' => timeout
     }
 
-    response = @session.do_get "/longpoll_delta", params, :notify
+    response = @session.do_get '/longpoll_delta', params, :notify
     Dropbox::parse_response(response)
   end
 
@@ -1370,7 +1370,7 @@ class DropboxClient
   def thumbnail_impl(from_path, size='large') # :nodoc:
     path = "/thumbnails/#{@root}#{format_path(from_path, true)}"
     params = {
-      "size" => size
+      'size' => size
     }
     @session.do_get path, params, :content
   end
@@ -1406,7 +1406,7 @@ class DropboxClient
               'to_path' => "#{to_path}",
               'root' => @root}
 
-    response = @session.do_post "/fileops/copy", params
+    response = @session.do_post '/fileops/copy', params
     Dropbox::parse_response(response)
   end
 
@@ -1449,13 +1449,13 @@ class DropboxClient
   RESERVED_CHARACTERS = /[^a-zA-Z0-9\-\.\_\~\/]/ # :nodoc:
 
   def format_path(path, escape=true) # :nodoc:
-    path = path.gsub(/\/+/,"/")
+    path = path.gsub(/\/+/,'/')
     # replace multiple slashes with a single one
 
-    path = path.gsub(/^\/?/,"/")
+    path = path.gsub(/^\/?/,'/')
     # ensure the path starts with a slash
 
-    path.gsub(/\/?$/,"")
+    path.gsub(/\/?$/,'')
     # ensure the path doesn't end with a slash
 
     return URI.escape(path, RESERVED_CHARACTERS) if escape

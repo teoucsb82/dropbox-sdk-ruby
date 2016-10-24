@@ -32,7 +32,7 @@ STATE_FILE = 'search_cache.json'
 
 def main()
   if (APP_KEY == '') || (APP_SECRET == '')
-    warn "ERROR: Set your APP_KEY and APP_SECRET at the top of search_cache.rb"
+    warn 'ERROR: Set your APP_KEY and APP_SECRET at the top of search_cache.rb'
     exit
   end
   prog_name = __FILE__
@@ -59,7 +59,7 @@ def main()
     command_reset(args)
   else
     warn "ERROR: Unknown command: #{command}"
-    warn "Run with no arguments for help."
+    warn 'Run with no arguments for help.'
     exit(1)
   end
 end
@@ -74,15 +74,15 @@ def command_link(args)
   web_auth = DropboxOAuth2FlowNoRedirect.new(APP_KEY, APP_SECRET)
   authorize_url = web_auth.start()
   puts "1. Go to: #{authorize_url}"
-  puts "2. Click \"Allow\" (you might have to log in first)."
-  puts "3. Copy the authorization code."
+  puts '2. Click "Allow" (you might have to log in first).'
+  puts '3. Copy the authorization code.'
 
-  print "Enter the authorization code here: "
+  print 'Enter the authorization code here: '
   STDOUT.flush
   auth_code = STDIN.gets.strip
 
   access_token, user_id = web_auth.finish(auth_code)
-  puts "Link successful."
+  puts 'Link successful.'
 
   save_state( 'access_token' => access_token,
     'tree' => {})
@@ -95,7 +95,7 @@ def command_update(args)
   elsif args.size == 2
     page_limit = Integer(args[1])
   else
-    warn "ERROR: \"update\" takes either zero or one argument."
+    warn 'ERROR: "update" takes either zero or one argument.'
     exit
   end
 
@@ -135,7 +135,7 @@ def command_update(args)
     state['tree'] = tree
     save_state(state)
   else
-    puts "No updates."
+    puts 'No updates.'
   end
 
 end
@@ -252,7 +252,7 @@ def command_find(args)
   elsif args.size == 2
     term = args[1]
   else
-    warn("ERROR: \"find\" takes either zero or one arguments.")
+    warn('ERROR: "find" takes either zero or one arguments.')
     exit
   end
 
@@ -268,7 +268,7 @@ end
 
 def command_reset(args)
   if args.size != 1
-    warn("ERROR: \"reset\" takes no arguments.")
+    warn('ERROR: "reset" takes no arguments.')
     exit
   end
 
@@ -299,7 +299,7 @@ end
 
 def save_state(state)
   state['tree'] = Node.to_json_content(state['tree'])
-  File.open(STATE_FILE,"w") do |f|
+  File.open(STATE_FILE,'w') do |f|
     f.write(JSON.pretty_generate(state, max_nesting: false))
   end
 end

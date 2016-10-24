@@ -1,8 +1,8 @@
-require "test/unit"
-require_relative "../lib/dropbox_sdk"
-require "securerandom"
-require "set"
-require "uri"
+require 'test/unit'
+require_relative '../lib/dropbox_sdk'
+require 'securerandom'
+require 'set'
+require 'uri'
 
 class SDKTest < Test::Unit::TestCase
   def testfile(name)
@@ -14,13 +14,13 @@ class SDKTest < Test::Unit::TestCase
   def setup
     @client = DropboxClient.new(ENV['DROPBOX_RUBY_SDK_ACCESS_TOKEN'])
 
-    @foo = testfile("foo.txt")
-    @frog = testfile("Costa Rican Frog.jpg")
-    @song = testfile("dropbox_song.mp3")
-    @fluff = "https://www.dropbox.com/s/qmocfrco2t0d28o/Fluffbeast.docx"
+    @foo = testfile('foo.txt')
+    @frog = testfile('Costa Rican Frog.jpg')
+    @song = testfile('dropbox_song.mp3')
+    @fluff = 'https://www.dropbox.com/s/qmocfrco2t0d28o/Fluffbeast.docx'
 
-    @save_url_statuses = ["PENDING", "COMPLETE", "DOWNLOADING"]
-    @test_dir = "/Ruby SDK Tests/" + Time.new.strftime("%Y-%m-%d %H.%M.%S") + "/"
+    @save_url_statuses = ['PENDING', 'COMPLETE', 'DOWNLOADING']
+    @test_dir = '/Ruby SDK Tests/' + Time.new.strftime('%Y-%m-%d %H.%M.%S') + '/'
   end
 
   def teardown
@@ -39,8 +39,8 @@ class SDKTest < Test::Unit::TestCase
   def assert_file(file, metadata, options={}, *more)
     hash_has(metadata,
              {
-               "bytes" => File.size(file),
-               "is_dir" => false
+               'bytes' => File.size(file),
+               'is_dir' => false
              }.merge(options),
              *more.concat(['revision', 'rev', 'size', 'modified'])
     )
@@ -57,21 +57,21 @@ class SDKTest < Test::Unit::TestCase
 
   def test_puts
     def assert_put(file, path)
-      file_path = @test_dir + "put" + path
-      result = @client.put_file(file_path, open(file, "rb"))
-      assert_file(file, result, "path" => file_path)
+      file_path = @test_dir + 'put' + path
+      result = @client.put_file(file_path, open(file, 'rb'))
+      assert_file(file, result, 'path' => file_path)
     end
 
-    assert_put(@foo, "foo.txt")
-    assert_put(@frog, "frog.jpg")
-    assert_put(@song, "song.mp3")
+    assert_put(@foo, 'foo.txt')
+    assert_put(@frog, 'frog.jpg')
+    assert_put(@song, 'song.mp3')
   end
   # Fake test
 
 
   def test_gets
     def assert_get(file, path)
-      file_path = @test_dir + "get" + path
+      file_path = @test_dir + 'get' + path
       upload(file, file_path)
       result = @client.get_file(file_path)
       local = open_binary(file)
@@ -79,25 +79,25 @@ class SDKTest < Test::Unit::TestCase
       assert_equal(result, local)
     end
 
-    assert_get(@foo, "foo.txt")
-    assert_get(@frog, "frog.txt")
-    assert_get(@song, "song.txt")
+    assert_get(@foo, 'foo.txt')
+    assert_get(@frog, 'frog.txt')
+    assert_get(@song, 'song.txt')
   end
 
   def test_metadatas
     def assert_metadata(file, path)
-      file_path = @test_dir + "meta" + path
+      file_path = @test_dir + 'meta' + path
       upload(file, file_path)
       result = @client.metadata(file_path)
-      assert_file(file, result, "path" => file_path)
+      assert_file(file, result, 'path' => file_path)
     end
-    assert_metadata(@foo, "foo.txt")
-    assert_metadata(@frog, "frog.txt")
-    assert_metadata(@song, "song.txt")
+    assert_metadata(@foo, 'foo.txt')
+    assert_metadata(@frog, 'frog.txt')
+    assert_metadata(@song, 'song.txt')
   end
 
   def test_create_folder
-    path = @test_dir + "new_folder"
+    path = @test_dir + 'new_folder'
     result = @client.file_create_folder(path)
     assert_equal(result['size'], '0 bytes')
     assert_equal(result['bytes'], 0)
@@ -106,83 +106,83 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def test_delete
-    path = @test_dir + "delfoo.txt"
+    path = @test_dir + 'delfoo.txt'
     upload(@foo, path)
     metadata = @client.metadata(path)
-    assert_file(@foo, metadata, "path" => path)
+    assert_file(@foo, metadata, 'path' => path)
 
     del_metadata = @client.file_delete(path)
-    assert_file(@foo, del_metadata, "path" => path, "is_deleted" => true, "bytes" => 0)
+    assert_file(@foo, del_metadata, 'path' => path, 'is_deleted' => true, 'bytes' => 0)
 
   end
 
   def test_copy
-    path = @test_dir + "copyfoo.txt"
-    path2 = @test_dir + "copyfoo2.txt"
+    path = @test_dir + 'copyfoo.txt'
+    path2 = @test_dir + 'copyfoo2.txt'
     upload(@foo, path)
     @client.file_copy(path, path2)
     metadata = @client.metadata(path)
     metadata2 = @client.metadata(path2)
 
-    assert_file(@foo, metadata, "path" => path)
-    assert_file(@foo, metadata2, "path" => path2)
+    assert_file(@foo, metadata, 'path' => path)
+    assert_file(@foo, metadata2, 'path' => path2)
   end
 
   def test_move
-    path = @test_dir + "movefoo.txt"
-    path2 = @test_dir + "movefoo2.txt"
+    path = @test_dir + 'movefoo.txt'
+    path2 = @test_dir + 'movefoo2.txt'
     upload(@foo, path)
     @client.file_move(path, path2)
 
     metadata = @client.metadata(path)
-    assert_file(@foo, metadata, "path" => path, "is_deleted" => true, "bytes" => 0)
+    assert_file(@foo, metadata, 'path' => path, 'is_deleted' => true, 'bytes' => 0)
 
     metadata = @client.metadata(path2)
-    assert_file(@foo, metadata, "path" => path2)
+    assert_file(@foo, metadata, 'path' => path2)
   end
 
   def test_stream
-    path = @test_dir + "/stream_song.mp3"
+    path = @test_dir + '/stream_song.mp3'
     upload(@song, path)
     link = @client.media(path)
     hash_has(link, {},
-             "url",
-             "expires"
+             'url',
+             'expires'
     )
   end
 
   def test_share
 
-    path = @test_dir + "/stream_song.mp3"
+    path = @test_dir + '/stream_song.mp3'
     upload(@song, path)
     link = @client.shares(path)
     hash_has(link, {},
-             "url",
-             "expires"
+             'url',
+             'expires'
     )
   end
 
   def test_search
 
-    path = @test_dir + "/search/"
+    path = @test_dir + '/search/'
 
-    upload(@foo, path + "text.txt");
-    upload(@foo, path + "subFolder/text.txt");
-    upload(@foo, path + "subFolder/cow.txt");
-    upload(@frog, path + "frog.jpg");
-    upload(@frog, path + "frog2.jpg");
-    upload(@frog, path + "subFolder/frog2.jpg");
+    upload(@foo, path + 'text.txt');
+    upload(@foo, path + 'subFolder/text.txt');
+    upload(@foo, path + 'subFolder/cow.txt');
+    upload(@frog, path + 'frog.jpg');
+    upload(@frog, path + 'frog2.jpg');
+    upload(@frog, path + 'subFolder/frog2.jpg');
 
-    results = @client.search(path, "sasdfasdf")
+    results = @client.search(path, 'sasdfasdf')
     assert_equal(results, [])
-    results = @client.search(path, "jpg")
+    results = @client.search(path, 'jpg')
     assert_equal(results.length, 3)
 
     for metadata in results
       assert_file(@frog, metadata)
     end
 
-    results = @client.search(path + "subFolder", "jpg")
+    results = @client.search(path + 'subFolder', 'jpg')
     assert_equal(results.length, 1)
     assert_file(@frog, results[0])
 
@@ -190,48 +190,48 @@ class SDKTest < Test::Unit::TestCase
 
   def test_revisions_restore
 
-    path = @test_dir + "foo_revs.txt"
+    path = @test_dir + 'foo_revs.txt'
     upload(@foo, path)
     upload(@frog, path, overwrite = true)
     upload(@song, path, overwrite = true)
     revs = @client.revisions(path)
     metadata = @client.metadata(path)
-    assert_file(@song, metadata, "path" => path, "mime_type" => "text/plain")
+    assert_file(@song, metadata, 'path' => path, 'mime_type' => 'text/plain')
 
     assert_equal(revs.length, 3)
-    assert_file(@song, revs[0], "path" => path, "mime_type" => "text/plain")
-    assert_file(@frog, revs[1], "path" => path, "mime_type" => "text/plain")
-    assert_file(@foo, revs[2], "path" => path, "mime_type" => "text/plain")
+    assert_file(@song, revs[0], 'path' => path, 'mime_type' => 'text/plain')
+    assert_file(@frog, revs[1], 'path' => path, 'mime_type' => 'text/plain')
+    assert_file(@foo, revs[2], 'path' => path, 'mime_type' => 'text/plain')
 
-    metadata = @client.restore(path, revs[2]["rev"])
-    assert_file(@foo, metadata, "path" => path, "mime_type" => "text/plain")
+    metadata = @client.restore(path, revs[2]['rev'])
+    assert_file(@foo, metadata, 'path' => path, 'mime_type' => 'text/plain')
     metadata = @client.metadata(path)
-    assert_file(@foo, metadata, "path" => path, "mime_type" => "text/plain")
+    assert_file(@foo, metadata, 'path' => path, 'mime_type' => 'text/plain')
   end
 
   def test_copy_ref
 
-    path = @test_dir + "foo_copy_ref.txt"
-    path2 = @test_dir + "foo_copy_ref_target.txt"
+    path = @test_dir + 'foo_copy_ref.txt'
+    path2 = @test_dir + 'foo_copy_ref_target.txt'
 
     upload(@foo, path)
     copy_ref = @client.create_copy_ref(path)
     hash_has(copy_ref, {},
-             "expires",
-             "copy_ref"
+             'expires',
+             'copy_ref'
     )
 
-    copied = @client.add_copy_ref(path2, copy_ref["copy_ref"])
+    copied = @client.add_copy_ref(path2, copy_ref['copy_ref'])
     metadata = @client.metadata(path2)
-    assert_file(@foo, metadata, "path" => path2)
+    assert_file(@foo, metadata, 'path' => path2)
     copied_foo = @client.get_file(path2)
-    local_foo = open(@foo, "rb").gets
+    local_foo = open(@foo, 'rb').gets
     assert_equal(copied_foo.length, local_foo.length)
     assert_equal(copied_foo, local_foo)
   end
 
   def test_chunked_upload
-    path = @test_dir + "chunked_upload_file.txt"
+    path = @test_dir + 'chunked_upload_file.txt'
     size = 1024*1024*10
     chunk_size = 4 * 1024 * 1102
 
@@ -253,16 +253,16 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def test_delta
-    prefix = @test_dir + "delta"
+    prefix = @test_dir + 'delta'
 
-    a = prefix + "/a.txt"
+    a = prefix + '/a.txt'
     upload(@foo, a)
-    b = prefix + "/b.txt"
+    b = prefix + '/b.txt'
     upload(@foo, b)
-    c = prefix + "/c"
-    c_1 = prefix + "/c/1.txt"
+    c = prefix + '/c'
+    c_1 = prefix + '/c/1.txt'
     upload(@foo, c_1)
-    c_2 = prefix + "/c/2.txt"
+    c_2 = prefix + '/c/2.txt'
     upload(@foo, c_2)
 
     prefix_lc = prefix.downcase
@@ -307,7 +307,7 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def test_delta_latest_cursor
-    prefix = @test_dir + "delta"
+    prefix = @test_dir + 'delta'
 
     # First test with no path_prefix
 
@@ -333,7 +333,7 @@ class SDKTest < Test::Unit::TestCase
     assert(r['entries'].empty?)
 
     # Going deeper down the tree is OK
-    r = @client.delta(cursor, prefix + "/subdir")
+    r = @client.delta(cursor, prefix + '/subdir')
     assert(r['entries'].empty?)
 
     # Going up (outside of the scope of the cursor) is not OK
@@ -343,13 +343,13 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def test_longpoll_delta
-    prefix = @test_dir + "delta"
+    prefix = @test_dir + 'delta'
 
     # Initial cursor has to come from #delta
     r = @client.delta(nil, prefix)
     cursor = r['cursor']
 
-    upload(@foo, prefix + "/a.txt")
+    upload(@foo, prefix + '/a.txt')
     r = @client.longpoll_delta(cursor)
     assert(r['changes'])
 
@@ -362,21 +362,21 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def test_save_url
-    to_path = URI.encode(@test_dir + "fluff.docx")
+    to_path = URI.encode(@test_dir + 'fluff.docx')
     result = @client.save_url(to_path, @fluff)
 
-    assert_includes(@save_url_statuses, result["status"])
-    assert_includes(result, "job")
+    assert_includes(@save_url_statuses, result['status'])
+    assert_includes(result, 'job')
   end
 
   def test_save_url_job
-    to_path = URI.encode(@test_dir + "fluff.docx")
+    to_path = URI.encode(@test_dir + 'fluff.docx')
     save_url = @client.save_url(to_path, @fluff)
 
-    job_id = save_url["job"]
+    job_id = save_url['job']
     result = @client.save_url_job(job_id)
 
-    assert_includes(@save_url_statuses, result["status"])
+    assert_includes(@save_url_statuses, result['status'])
 
   end
 end

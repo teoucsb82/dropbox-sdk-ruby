@@ -1,5 +1,5 @@
-require "test/unit"
-require "../lib/dropbox_sdk"
+require 'test/unit'
+require '../lib/dropbox_sdk'
 
 class SSLTest < Test::Unit::TestCase
   # Called before every test method runs. Can be used
@@ -19,7 +19,7 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.module_eval do
       remove_const(:API_SERVER)
     end
-    Dropbox.const_set("API_SERVER", "api.dropbox.com")
+    Dropbox.const_set('API_SERVER', 'api.dropbox.com')
     @client.metadata('/')
   end
 
@@ -29,12 +29,12 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.module_eval do
       remove_const(:API_SERVER)
     end
-    Dropbox.const_set("API_SERVER", "www.v.dropbox.com")
+    Dropbox.const_set('API_SERVER', 'www.v.dropbox.com')
     begin
       @client.metadata('/')
     rescue DropboxError => e
     end
-    assert("#{e}".include? "SSL error")
+    assert("#{e}".include? 'SSL error')
   end
 
   # Connection to a host with an allowed certificate
@@ -43,12 +43,12 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.module_eval do
       remove_const(:API_SERVER)
     end
-    Dropbox.const_set("API_SERVER", "www.digicert.com")
+    Dropbox.const_set('API_SERVER', 'www.digicert.com')
     begin
       @client.metadata('/')
     rescue DropboxError => e
     end
-    assert(!("#{e}".include? "SSL error"))
+    assert(!("#{e}".include? 'SSL error'))
   end
 
   # Connection to a host with a disallowed certificate
@@ -57,11 +57,11 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.module_eval do
       remove_const(:API_SERVER)
     end
-    Dropbox.const_set("API_SERVER", "twitter.com")
+    Dropbox.const_set('API_SERVER', 'twitter.com')
     begin
       @client.metadata('/')
     rescue DropboxError => e
     end
-    assert("#{e}".include? "SSL error")
+    assert("#{e}".include? 'SSL error')
   end
 end

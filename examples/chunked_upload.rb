@@ -11,7 +11,7 @@ STATE_FILE = 'search_cache.json'
 
 def main()
   if (APP_KEY == '') || (APP_SECRET == '')
-    warn "ERROR: Set your APP_KEY and APP_SECRET at the top of search_cache.rb"
+    warn 'ERROR: Set your APP_KEY and APP_SECRET at the top of search_cache.rb'
     exit
   end
   prog_name = __FILE__
@@ -23,17 +23,17 @@ def main()
   end
 
   if args.size != 3
-    warn "ERROR: expecting exactly three arguments.  Run with no arguments for help."
+    warn 'ERROR: expecting exactly three arguments.  Run with no arguments for help.'
     exit(1)
   end
 
   web_auth = DropboxOAuth2FlowNoRedirect.new(APP_KEY, APP_SECRET)
   authorize_url = web_auth.start()
   puts "1. Go to: #{authorize_url}"
-  puts "2. Click \"Allow\" (you might have to log in first)."
-  puts "3. Copy the authorization code."
+  puts '2. Click "Allow" (you might have to log in first).'
+  puts '3. Copy the authorization code.'
 
-  print "Enter the authorization code here: "
+  print 'Enter the authorization code here: '
   STDOUT.flush
   auth_code = STDIN.gets.strip
 
@@ -47,24 +47,24 @@ def main()
 
   # Upload the file
   local_file_size = File.size(local_file_path)
-  uploader = c.get_chunked_uploader(File.new(local_file_path, "r"), local_file_size)
+  uploader = c.get_chunked_uploader(File.new(local_file_path, 'r'), local_file_size)
   retries = 0
-  puts "Uploading..."
+  puts 'Uploading...'
   while uploader.offset < uploader.total_size
     begin
       uploader.upload(chunk_size)
     rescue DropboxError => e
       if retries > 10
-        puts "- Error uploading, giving up."
+        puts '- Error uploading, giving up.'
         break
       end
-      puts "- Error uploading, trying again..."
+      puts '- Error uploading, trying again...'
       retries += 1
     end
   end
-  puts "Finishing upload..."
+  puts 'Finishing upload...'
   uploader.finish(dropbox_target_path)
-  puts "Done."
+  puts 'Done.'
 
 end
 

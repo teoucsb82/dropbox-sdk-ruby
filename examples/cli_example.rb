@@ -19,8 +19,8 @@ class DropboxCLI
 
   def initialize
     if (APP_KEY == '') || (APP_SECRET == '')
-      puts "You must set your APP_KEY and APP_SECRET in cli_example.rb!"
-      puts "Find this in your apps page at https://www.dropbox.com/developers/"
+      puts 'You must set your APP_KEY and APP_SECRET in cli_example.rb!'
+      puts 'Find this in your apps page at https://www.dropbox.com/developers/'
       exit
     end
 
@@ -29,15 +29,15 @@ class DropboxCLI
 
   def login
     if not @client.nil?
-      puts "already logged in!"
+      puts 'already logged in!'
     else
       web_auth = DropboxOAuth2FlowNoRedirect.new(APP_KEY, APP_SECRET)
       authorize_url = web_auth.start()
       puts "1. Go to: #{authorize_url}"
-      puts "2. Click \"Allow\" (you might have to log in first)."
-      puts "3. Copy the authorization code."
+      puts '2. Click "Allow" (you might have to log in first).'
+      puts '3. Copy the authorization code.'
 
-      print "Enter the authorization code here: "
+      print 'Enter the authorization code here: '
       STDOUT.flush
       auth_code = STDIN.gets.strip
 
@@ -85,7 +85,7 @@ class DropboxCLI
 
   def logout(command)
     @client = nil
-    puts "You are logged out."
+    puts 'You are logged out.'
   end
 
   def put(command)
@@ -109,15 +109,15 @@ class DropboxCLI
   def get(command)
     dest = command[2]
     if !command[1] || command[1].empty?
-      puts "please specify item to get"
+      puts 'please specify item to get'
     elsif !dest || dest.empty?
-      puts "please specify full local path to dest, i.e. the file to write to"
+      puts 'please specify full local path to dest, i.e. the file to write to'
     elsif File.exists?(dest)
       puts "error: File #{dest} already exists."
     else
       src = clean_up(command[1])
       out,metadata = @client.get_file_and_metadata('/' + src)
-      puts "Metadata:"
+      puts 'Metadata:'
       pp metadata
       open(dest, 'w'){|f| f.write out }
       puts "wrote file #{dest}."
@@ -134,7 +134,7 @@ class DropboxCLI
     dest = command[2]
     command[3] ||= 'small'
     out,metadata = @client.thumbnail_and_metadata(command[1], command[3])
-    puts "Metadata:"
+    puts 'Metadata:'
     pp metadata
     open(dest, 'w'){|f| f.write out }
     puts "wrote thumbnail#{dest}."
@@ -142,7 +142,7 @@ class DropboxCLI
 
   def create_copy_ref(command)
     if !command[1] || command[1].empty?
-      puts "please specify item to create copy_ref for"
+      puts 'please specify item to create copy_ref for'
     else
       pp @client.create_copy_ref(command[1])
     end
@@ -150,9 +150,9 @@ class DropboxCLI
 
   def cp_copy_ref(command)
     if !command[1] || command[1].empty?
-      puts "please specify copy_ref of the source item"
+      puts 'please specify copy_ref of the source item'
     elsif !command[2] || command[2].empty?
-      puts "please specify Dropbox path to dest, i.e. the file to copy to"
+      puts 'please specify Dropbox path to dest, i.e. the file to copy to'
     else
       src = clean_up(command[1])
       dest = clean_up(command[2])

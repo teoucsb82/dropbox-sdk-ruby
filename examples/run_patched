@@ -10,7 +10,7 @@ require File.expand_path('../../lib/dropbox_sdk', __FILE__)
 
 def main
   if ARGV.length < 2
-    $stderr.puts "Usage: ./run_patched <app-config.json> <program.rb> [args...]"
+    $stderr.puts 'Usage: ./run_patched <app-config.json> <program.rb> [args...]'
     exit 1
   end
 

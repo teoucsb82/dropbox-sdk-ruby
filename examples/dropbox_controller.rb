@@ -23,8 +23,8 @@
 require 'dropbox_sdk'
 require 'securerandom'
 
-APP_KEY = ""
-APP_SECRET = ""
+APP_KEY = ''
+APP_SECRET = ''
 
 class DropboxController < ApplicationController
   def main
@@ -48,10 +48,10 @@ class DropboxController < ApplicationController
     rescue DropboxAuthError => e
       session.delete(:access_token) # An auth error means the access token is probably bad
       logger.info "Dropbox auth error: #{e}"
-      render text: "Dropbox auth error"
+      render text: 'Dropbox auth error'
     rescue DropboxError => e
       logger.info "Dropbox API error: #{e}"
-      render text: "Dropbox API error"
+      render text: 'Dropbox API error'
     end
   end
 
@@ -93,15 +93,15 @@ class DropboxController < ApplicationController
       redirect_to(action: 'auth_start')
     rescue DropboxOAuth2Flow::CsrfError => e
       logger.info("Error in OAuth 2 flow: CSRF mismatch: #{e}")
-      render text: "CSRF error"
+      render text: 'CSRF error'
     rescue DropboxOAuth2Flow::NotApprovedError => e
-      render text: "Not approved?  Why not, bro?"
+      render text: 'Not approved?  Why not, bro?'
     rescue DropboxOAuth2Flow::ProviderError => e
       logger.info "Error in OAuth 2 flow: Error redirect from Dropbox: #{e}"
-      render text: "Strange error."
+      render text: 'Strange error.'
     rescue DropboxError => e
       logger.info "Error getting OAuth 2 access token: #{e}"
-      render text: "Error communicating with Dropbox servers."
+      render text: 'Error communicating with Dropbox servers.'
     end
   end
 end
