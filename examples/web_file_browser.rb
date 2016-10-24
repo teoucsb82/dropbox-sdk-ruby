@@ -177,7 +177,7 @@ end
 
 # Rack will issue a warning if no session secret key is set.  A real web app would not have
 # a hard-coded secret in the code but would load it from a config file.
-use Rack::Session::Cookie, :secret => 'dummy_secret'
+use Rack::Session::Cookie, secret: 'dummy_secret'
 
 set :port, 5000
 enable :sessions

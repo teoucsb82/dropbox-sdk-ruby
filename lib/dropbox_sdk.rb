@@ -14,10 +14,10 @@ module Dropbox # :nodoc:
   WEB_SERVER = "www.dropbox.com"
 
   SERVERS = {
-    :api => API_SERVER,
-    :content => API_CONTENT_SERVER,
-    :notify => API_NOTIFY_SERVER,
-    :web => WEB_SERVER
+    api: API_SERVER,
+    content: API_CONTENT_SERVER,
+    notify: API_NOTIFY_SERVER,
+    web: WEB_SERVER
   }
 
   API_VERSION = 1
@@ -160,7 +160,7 @@ class DropboxSessionBase # :nodoc:
     port = 443
     host = Dropbox::SERVERS[server]
     full_path = "/#{Dropbox::API_VERSION}#{path}"
-    return URI::HTTPS.build(:host => host, :path => full_path)
+    return URI::HTTPS.build(host: host, path: full_path)
   end
 
   def build_url_with_params(path, params, server) # :nodoc:

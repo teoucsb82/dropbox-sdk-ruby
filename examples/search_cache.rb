@@ -312,12 +312,12 @@ end
 def save_state(state)
   state['tree'] = Node.to_json_content(state['tree'])
   File.open(STATE_FILE,"w") do |f|
-    f.write(JSON.pretty_generate(state, :max_nesting => false))
+    f.write(JSON.pretty_generate(state, max_nesting: false))
   end
 end
 
 def load_state()
-  state = JSON.parse(File.read(STATE_FILE), :max_nesting => false)
+  state = JSON.parse(File.read(STATE_FILE), max_nesting: false)
   state['tree'] = Node.from_json_content(state['tree'])
   state
 end

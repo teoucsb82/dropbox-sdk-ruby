@@ -16,6 +16,6 @@ task :require_token_in_env do
   end
 end
 
-task :default => :test
+task default: :test
 # This short-circuits the 'test' task
-task :test => :require_token_in_env
+task test: :require_token_in_env

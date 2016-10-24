@@ -30,33 +30,32 @@ class DropboxController < ApplicationController
   def main
     client = get_dropbox_client
     unless client
-      redirect_to(:action => 'auth_start') && (return)
+      redirect_to(action: 'auth_start') && (return)
     end
 
     account_info = client.account_info
 
     # Show a file upload page
-    render :inline =>
-      "#{account_info['email']} <br/><%= form_tag({:action => :upload}, :multipart => true) do %><%= file_field_tag 'file' %><%= submit_tag 'Upload' %><% end %>"
+    render inline:       "#{account_info['email']} <br/><%= form_tag({:action => :upload}, :multipart => true) do %><%= file_field_tag 'file' %><%= submit_tag 'Upload' %><% end %>"
   end
 
   def upload
     client = get_dropbox_client
     unless client
-      redirect_to(:action => 'auth_start') && (return)
+      redirect_to(action: 'auth_start') && (return)
     end
 
     begin
       # Upload the POST'd file to Dropbox, keeping the same name
       resp = client.put_file(params[:file].original_filename, params[:file].read)
-      render :text => "Upload successful.  File now at #{resp['path']}"
+      render text: "Upload successful.  File now at #{resp['path']}"
     rescue DropboxAuthError => e
       session.delete(:access_token) # An auth error means the access token is probably bad
       logger.info "Dropbox auth error: #{e}"
-      render :text => "Dropbox auth error"
+      render text: "Dropbox auth error"
     rescue DropboxError => e
       logger.info "Dropbox API error: #{e}"
-      render :text => "Dropbox API error"
+      render text: "Dropbox API error"
     end
   end
 
@@ -74,7 +73,7 @@ class DropboxController < ApplicationController
   end
 
   def get_web_auth()
-    redirect_uri = url_for(:action => 'auth_finish')
+    redirect_uri = url_for(action: 'auth_finish')
     DropboxOAuth2Flow.new(APP_KEY, APP_SECRET, redirect_uri, session, :dropbox_auth_csrf_token)
   end
 
@@ -90,23 +89,23 @@ class DropboxController < ApplicationController
     begin
       access_token, user_id, url_state = get_web_auth.finish(params)
       session[:access_token] = access_token
-      redirect_to :action => 'main'
+      redirect_to action: 'main'
     rescue DropboxOAuth2Flow::BadRequestError => e
-      render :text => "Error in OAuth 2 flow: Bad request: #{e}"
+      render text: "Error in OAuth 2 flow: Bad request: #{e}"
     rescue DropboxOAuth2Flow::BadStateError => e
       logger.info("Error in OAuth 2 flow: No CSRF token in session: #{e}")
-      redirect_to(:action => 'auth_start')
+      redirect_to(action: 'auth_start')
     rescue DropboxOAuth2Flow::CsrfError => e
       logger.info("Error in OAuth 2 flow: CSRF mismatch: #{e}")
-      render :text => "CSRF error"
+      render text: "CSRF error"
     rescue DropboxOAuth2Flow::NotApprovedError => e
-      render :text => "Not approved?  Why not, bro?"
+      render text: "Not approved?  Why not, bro?"
     rescue DropboxOAuth2Flow::ProviderError => e
       logger.info "Error in OAuth 2 flow: Error redirect from Dropbox: #{e}"
-      render :text => "Strange error."
+      render text: "Strange error."
     rescue DropboxError => e
       logger.info "Error getting OAuth 2 access token: #{e}"
-      render :text => "Error communicating with Dropbox servers."
+      render text: "Error communicating with Dropbox servers."
     end
   end
 end
