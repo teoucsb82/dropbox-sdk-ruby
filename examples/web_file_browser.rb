@@ -119,7 +119,7 @@ def render_folder(client, entry)
   entry['contents'].each do |child|
     cp = child['path']      # child path
     cn = File.basename(cp)  # child name
-    cn += '/' if (child['is_dir'])
+    cn += '/' if child['is_dir']
     out += "<div><a style='text-decoration: none' href='/?path=#{h cp}'>#{h cn}</a></div>"
   end
 
