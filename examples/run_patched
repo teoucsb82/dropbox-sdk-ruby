@@ -41,7 +41,7 @@ def main
   host = config['host'] || config['server']  # 'server' is the old field name
 
   # Patch hostnames in dropbox_sdk
-  if host != nil and host != 'dropbox.com'
+  if (host != nil) && (host != 'dropbox.com')
     Dropbox::API_SERVER.replace "api-#{host}"
     Dropbox::API_CONTENT_SERVER.replace "api-content-#{host}"
     Dropbox::WEB_SERVER.replace "meta-#{host}"

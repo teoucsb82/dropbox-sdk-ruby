@@ -31,7 +31,7 @@ APP_SECRET = ''
 STATE_FILE = 'search_cache.json'
 
 def main()
-  if APP_KEY == '' or APP_SECRET == ''
+  if (APP_KEY == '') || (APP_SECRET == '')
     warn "ERROR: Set your APP_KEY and APP_SECRET at the top of search_cache.rb"
     exit
   end
@@ -112,7 +112,7 @@ def command_update(args)
 
   page = 0
   changed = false
-  while (page_limit == nil) or (page < page_limit)
+  while (page_limit == nil) || (page < page_limit)
     # Get /delta results from Dropbox
     result = c.delta(cursor)
     page += 1
@@ -224,7 +224,7 @@ def apply_delta(root, e)
     branch.each do |part|
       node = children[part]
       # If one of the parent folders is missing, then we're done.
-      if node == nil or not node.folder?
+      if (node == nil) || (not node.folder?)
         missing_parent = true
         break
       end
@@ -292,7 +292,7 @@ end
 def search_tree(results, tree, term)
   tree.each do |name_lc, node|
     path = node.path
-    if (path != nil) and path.include?(term)
+    if (path != nil) && path.include?(term)
       if node.folder?
         results.push("#{path}")
       else

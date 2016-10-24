@@ -118,7 +118,7 @@ module Dropbox # :nodoc:
       rescue
         raise DropboxError.new("Dropbox Server Error: body=#{response.body}", response)
       end
-      if d['user_error'] and d['error']
+      if d['user_error'] && d['error']
         raise DropboxError.new(d['error'], response, d['user_error'])  #user_error is translated
       elsif d['error']
         raise DropboxError.new(d['error'], response)
@@ -277,10 +277,10 @@ class DropboxSession < DropboxSessionBase  # :nodoc:
     end
     parts = CGI.parse(response.body)
 
-    if !parts.has_key? "oauth_token" and parts["oauth_token"].length != 1
+    if !parts.has_key?("oauth_token") && (parts["oauth_token"].length != 1)
       raise DropboxAuthError.new("Invalid response from #{url_end}: missing \"oauth_token\" parameter: #{response.body}", response)
     end
-    if !parts.has_key? "oauth_token_secret" and parts["oauth_token_secret"].length != 1
+    if !parts.has_key?("oauth_token_secret") && (parts["oauth_token_secret"].length != 1)
       raise DropboxAuthError.new("Invalid response from #{url_end}: missing \"oauth_token\" parameter: #{response.body}", response)
     end
 
@@ -425,7 +425,7 @@ class DropboxOAuth2FlowBase  # :nodoc:
     if not consumer_secret.is_a?(String)
       raise ArgumentError, "consumer_secret must be a String, got #{consumer_secret.inspect}"
     end
-    if not (locale.nil? or locale.is_a?(String))
+    if not (locale.nil? || locale.is_a?(String))
       raise ArgumentError, "locale must be a String or nil, got #{locale.inspect}"
     end
     @consumer_key = consumer_key
@@ -483,7 +483,7 @@ class DropboxOAuth2FlowBase  # :nodoc:
         raise DropboxError.new("Bad response from /token: field \"#{k}\" is not a string.")
       end
     }
-    if j["token_type"] != "bearer" and j["token_type"] != "Bearer"
+    if (j["token_type"] != "bearer") && (j["token_type"] != "Bearer")
       raise DropboxError.new("Bad response from /token: \"token_type\" is \"#{ j['token_type'] }\".")
     end
 
@@ -559,7 +559,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
   #
   # Returns the URL to redirect the user to.
   def start(url_state=nil)
-    unless url_state.nil? or url_state.is_a?(String)
+    unless url_state.nil? || url_state.is_a?(String)
       raise ArgumentError, "url_state must be a String"
     end
 
@@ -598,11 +598,11 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
     error_description = query_params['error_description']
     code = query_params['code']
 
-    if not error.nil? and not code.nil?
+    if (not error.nil?) && (not code.nil?)
       raise BadRequestError.new("Query parameters 'code' and 'error' are both set;" +
                                 " only one must be set.")
     end
-    if error.nil? and code.nil?
+    if error.nil? && code.nil?
       raise BadRequestError.new("Neither query parameter 'code' or 'error' is set.")
     end
 
@@ -870,7 +870,7 @@ class DropboxClient
         rescue SystemCallError => e
           raise e
         rescue DropboxError => e
-          raise e if e.http_response.nil? or e.http_response.code[0] == '5'
+          raise e if e.http_response.nil? || (e.http_response.code[0] == '5')
           begin
             resp = JSON.parse(e.http_response.body)
             raise DropboxError.new('server response does not have offset key') unless resp.has_key? 'offset'
@@ -879,7 +879,7 @@ class DropboxClient
           end
         end
 
-        if resp.has_key? 'offset' and resp['offset'] > @offset
+        if resp.has_key?('offset') && resp['offset'] > @offset
           @offset += (resp['offset'] - @offset) if resp['offset']
           last_chunk = nil
         end

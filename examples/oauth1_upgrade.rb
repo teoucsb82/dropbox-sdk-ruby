@@ -7,7 +7,7 @@ APP_KEY = ''
 APP_SECRET = ''
 
 def main
-  if APP_KEY == '' or APP_SECRET == ''
+  if (APP_KEY == '') || (APP_SECRET == '')
     warn "ERROR: Set your APP_KEY and APP_SECRET at the top of search_cache.rb"
     exit
   end

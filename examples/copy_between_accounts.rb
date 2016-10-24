@@ -10,7 +10,7 @@ STATE_FILE = 'copy_between_accounts.json'
 
 def main()
   prog_name = __FILE__
-  if APP_KEY == '' or APP_SECRET == ''
+  if (APP_KEY == '') || (APP_SECRET == '')
     warn "ERROR: Set your APP_KEY and APP_SECRET at the top of #{prog_name}"
     exit
   end
@@ -105,7 +105,7 @@ def command_copy(args)
   from = args[1].gsub(/['"]/,'')
   to = args[2].gsub(/['"]/,'')
 
-  if not to.index(':') or not from.index(':')
+  if (not to.index(':')) || (not from.index(':'))
     warn "ERROR: Ill-formated paths. Run #{prog_name} without arugments to see documentation."
     exit
   end
@@ -113,7 +113,7 @@ def command_copy(args)
   from_uid, from_path = from.split ":"
   to_uid, to_path = to.split ":"
 
-  if not state.has_key?(to_uid) or not state.has_key?(from_uid)
+  if (not state.has_key?(to_uid)) || (not state.has_key?(from_uid))
     warn "ERROR: Those UIDs have not linked.  Run #{prog_name} list to see linked UIDs."
     exit
   end

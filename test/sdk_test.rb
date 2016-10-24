@@ -236,7 +236,7 @@ class SDKTest < Test::Unit::TestCase
     random_data = SecureRandom.random_bytes(n=size)
     uploader = @client.get_chunked_uploader(StringIO.new(random_data), size)
     error_count = 0
-    while uploader.offset < size and error_count < 5
+    while uploader.offset < size && error_count < 5
       begin
         upload = uploader.upload(chunk_size = chunk_size)
       rescue DropboxError => e

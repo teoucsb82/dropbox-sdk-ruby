@@ -187,7 +187,7 @@ helpers do
   alias_method :h, :escape_html
 end
 
-if APP_KEY == '' or APP_SECRET == ''
+if (APP_KEY == '') || (APP_SECRET == '')
   puts "You must set APP_KEY and APP_SECRET at the top of \"#{__FILE__}\"!"
   exit 1
 end

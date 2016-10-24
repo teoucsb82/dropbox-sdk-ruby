@@ -18,7 +18,7 @@ class DropboxCLI
   LOGIN_REQUIRED = %w{put get create_copy_ref cp_copy_ref cp mv rm ls mkdir info logout search thumbnail}
 
   def initialize
-    if APP_KEY == '' or APP_SECRET == ''
+    if (APP_KEY == '') || (APP_SECRET == '')
       puts "You must set your APP_KEY and APP_SECRET in cli_example.rb!"
       puts "Find this in your apps page at https://www.dropbox.com/developers/"
       exit
