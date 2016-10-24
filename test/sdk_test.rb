@@ -36,6 +36,7 @@ class SDKTest < Test::Unit::TestCase
       assert_equal(value, dict[key])
     end
   end
+
   def assert_file(file, metadata, options={}, *more)
     hash_has(metadata,
              {
@@ -50,6 +51,7 @@ class SDKTest < Test::Unit::TestCase
   def open_binary(filename)
     File.open(filename, 'rb') { |io| io.read }
   end
+
   def upload(filename, path, overwrite=false, parent_rev=nil)
     @client.put_file(path, open_binary(filename), overwrite, parent_rev)
   end
@@ -149,6 +151,7 @@ class SDKTest < Test::Unit::TestCase
              "expires"
     )
   end
+
   def test_share
 
     path = @test_dir + "/stream_song.mp3"
@@ -159,6 +162,7 @@ class SDKTest < Test::Unit::TestCase
              "expires"
     )
   end
+
   def test_search
 
     path = @test_dir + "/search/"

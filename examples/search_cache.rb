@@ -152,16 +152,20 @@ class Node
     # For folders, content is a hash of children Nodes, keyed by lower-case file names.
     @content = content
   end
+
   def folder?()
     @content.is_a? Hash
   end
+
   def to_json()
     [@path, Node.to_json_content(@content)]
   end
+
   def self.from_json(jnode)
     path, jcontent = jnode
     Node.new(path, Node.from_json_content(jcontent))
   end
+
   def self.to_json_content(content)
     if content.is_a? Hash
       map_hash_values(content) { |child| child.to_json }
@@ -169,6 +173,7 @@ class Node
       content
     end
   end
+
   def self.from_json_content(jcontent)
     if jcontent.is_a? Hash
       map_hash_values(jcontent) { |jchild| Node.from_json jchild }
