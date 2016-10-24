@@ -29,7 +29,7 @@ APP_SECRET = ''
 # OAuth stuff
 
 def get_web_auth()
-  return DropboxOAuth2Flow.new(APP_KEY, APP_SECRET, url('/dropbox-auth-finish'),
+  DropboxOAuth2Flow.new(APP_KEY, APP_SECRET, url('/dropbox-auth-finish'),
                                session, :dropbox_auth_csrf_token)
 end
 

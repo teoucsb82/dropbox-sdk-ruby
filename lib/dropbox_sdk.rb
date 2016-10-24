@@ -160,14 +160,14 @@ class DropboxSessionBase # :nodoc:
     port = 443
     host = Dropbox::SERVERS[server]
     full_path = "/#{Dropbox::API_VERSION}#{path}"
-    return URI::HTTPS.build(host: host, path: full_path)
+    URI::HTTPS.build(host: host, path: full_path)
   end
 
   def build_url_with_params(path, params, server) # :nodoc:
     target = build_url(path, server)
     params['locale'] = @locale
     target.query = Dropbox::make_query_string(params)
-    return target
+    target
   end
 
   protected
@@ -474,7 +474,7 @@ class DropboxOAuth2FlowBase # :nodoc:
       raise DropboxError.new("Bad response from /token: \"token_type\" is \"#{ j['token_type'] }\".")
     end
 
-    return j['access_token'], j['uid']
+    [j['access_token'], j['uid']]
   end
 end
 
@@ -553,7 +553,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
     state += "|" + url_state unless url_state.nil?
     @session[@csrf_token_session_key] = csrf_token
 
-    return _get_authorize_url(@redirect_uri, state)
+    _get_authorize_url(@redirect_uri, state)
   end
 
   # Call this after the user has visited the authorize URL (see: start()), approved your app,
@@ -630,7 +630,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
     # If everything went ok, make the network call to get an access token.
 
     access_token, user_id = _finish(code, @redirect_uri)
-    return access_token, user_id, url_state
+    [access_token, user_id, url_state]
   end
 
   # Thrown if the redirect URL was missing parameters or if the given parameters were not valid.
@@ -936,7 +936,7 @@ class DropboxClient
     response = get_file_impl(from_path, rev)
     parsed_response = Dropbox::parse_response(response, raw=true)
     metadata = parse_metadata(response)
-    return parsed_response, metadata
+    [parsed_response, metadata]
   end
 
   # Download a file (helper method - don't call this directly).
@@ -1246,7 +1246,7 @@ class DropboxClient
     response = thumbnail_impl(from_path, size)
     parsed_response = Dropbox::parse_response(response, raw=true)
     metadata = parse_metadata(response)
-    return parsed_response, metadata
+    [parsed_response, metadata]
   end
 
   # A way of letting you keep a local representation of the Dropbox folder
