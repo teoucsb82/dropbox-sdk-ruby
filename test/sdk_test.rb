@@ -38,11 +38,11 @@ class SDKTest < Test::Unit::TestCase
   end
   def assert_file(file, metadata, options={}, *more)
     hash_has(metadata,
-      {
-        "bytes" => File.size(file),
-        "is_dir" => false
-      }.merge(options),
-      *more.concat(['revision', 'rev', 'size', 'modified'])
+             {
+               "bytes" => File.size(file),
+               "is_dir" => false
+             }.merge(options),
+             *more.concat(['revision', 'rev', 'size', 'modified'])
     )
 
   end
@@ -145,8 +145,8 @@ class SDKTest < Test::Unit::TestCase
     upload(@song, path)
     link = @client.media(path)
     hash_has(link, {},
-      "url",
-      "expires"
+             "url",
+             "expires"
     )
   end
   def test_share
@@ -155,8 +155,8 @@ class SDKTest < Test::Unit::TestCase
     upload(@song, path)
     link = @client.shares(path)
     hash_has(link, {},
-      "url",
-      "expires"
+             "url",
+             "expires"
     )
   end
   def test_search
@@ -214,8 +214,8 @@ class SDKTest < Test::Unit::TestCase
     upload(@foo, path)
     copy_ref = @client.create_copy_ref(path)
     hash_has(copy_ref, {},
-      "expires",
-      "copy_ref"
+             "expires",
+             "copy_ref"
     )
 
     copied = @client.add_copy_ref(path2, copy_ref["copy_ref"])
