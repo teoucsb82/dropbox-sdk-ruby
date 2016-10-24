@@ -84,10 +84,8 @@ def command_link(args)
   access_token, user_id = web_auth.finish(auth_code)
   puts "Link successful."
 
-  save_state({
-    'access_token' => access_token,
-    'tree' => {}
-  })
+  save_state(    'access_token' => access_token,
+    'tree' => {})
 end
 
 

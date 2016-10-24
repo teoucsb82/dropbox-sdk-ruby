@@ -161,7 +161,7 @@ class DropboxSessionBase # :nodoc:
     port = 443
     host = Dropbox::SERVERS[server]
     full_path = "/#{Dropbox::API_VERSION}#{path}"
-    return URI::HTTPS.build({:host => host, :path => full_path})
+    return URI::HTTPS.build(:host => host, :path => full_path)
   end
 
   def build_url_with_params(path, params, server) # :nodoc:
@@ -1225,7 +1225,7 @@ class DropboxClient
   #   For a detailed description of what this call returns, visit:
   #    https://www.dropbox.com/developers/reference/api#shares
   def shares(path, short_url=true)
-    response = @session.do_get "/shares/#{@root}#{format_path(path)}", {"short_url"=>short_url}
+    response = @session.do_get "/shares/#{@root}#{format_path(path)}", "short_url"=>short_url
     Dropbox::parse_response(response)
   end
 
