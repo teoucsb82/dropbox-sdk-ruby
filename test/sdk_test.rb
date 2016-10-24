@@ -277,7 +277,7 @@ class SDKTest < Test::Unit::TestCase
       entries = Set.new if r['reset']
       r['entries'].each { |path_lc, md|
         if path_lc.start_with?(prefix_lc+'/') || path_lc == prefix_lc
-          assert(md != nil)  # we should never get deletes under 'prefix'
+          assert(md != nil) # we should never get deletes under 'prefix'
           entries.add path_lc
         end
       }
@@ -298,7 +298,7 @@ class SDKTest < Test::Unit::TestCase
       entries = Set.new if r['reset']
       r['entries'].each { |path_lc, md|
         assert path_lc.start_with?(c_lc+'/') || path_lc == c_lc
-        assert(md != nil)  # we should never get deletes
+        assert(md != nil) # we should never get deletes
         entries.add path_lc
       }
       if not r['has_more']

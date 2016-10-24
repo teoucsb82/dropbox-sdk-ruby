@@ -38,7 +38,7 @@ def main
   end
   app_key = config['key']
   app_secret = config['secret']
-  host = config['host'] || config['server']  # 'server' is the old field name
+  host = config['host'] || config['server'] # 'server' is the old field name
 
   # Patch hostnames in dropbox_sdk
   if (host != nil) && (host != 'dropbox.com')

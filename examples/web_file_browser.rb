@@ -93,7 +93,7 @@ get '/' do
   begin
     entry = client.metadata(path)
   rescue DropboxAuthError => e
-    session.delete(:access_token)  # An auth error means the access token is probably bad
+    session.delete(:access_token) # An auth error means the access token is probably bad
     logger.info "Dropbox auth error: #{e}"
     return html_page "Dropbox auth error"
   rescue DropboxError => e
@@ -118,7 +118,7 @@ def render_folder(client, entry)
   out += "<label for='file'>Upload file:</label> <input name='file' type='file'/>"
   out += "<input type='submit' value='Upload'/>"
   out += "<input name='folder' type='hidden' value='#{h entry['path']}'/>"
-  out += "</form>"  # TODO: Add a token to counter CSRF attacks.
+  out += "</form>" # TODO: Add a token to counter CSRF attacks.
   # List of folder contents
   entry['contents'].each do |child|
     cp = child['path']      # child path
@@ -155,7 +155,7 @@ post '/upload' do
   begin
     entry = client.put_file("#{params[:folder]}/#{name}", temp_file.read)
   rescue DropboxAuthError => e
-    session.delete(:access_token)  # An auth error means the access token is probably bad
+    session.delete(:access_token) # An auth error means the access token is probably bad
     logger.info "Dropbox auth error: #{e}"
     return html_page "Dropbox auth error"
   rescue DropboxError => e

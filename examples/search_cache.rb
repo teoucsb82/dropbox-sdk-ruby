@@ -84,7 +84,7 @@ def command_link(args)
   access_token, user_id = web_auth.finish(auth_code)
   puts "Link successful."
 
-  save_state(    'access_token' => access_token,
+  save_state( 'access_token' => access_token,
     'tree' => {})
 end
 
@@ -211,7 +211,7 @@ def apply_delta(root, e)
 
     # Create the file/folder.
     node = get_or_create_child(children, leaf)
-    node.path = metadata['path']  # Save the un-lower-cased path.
+    node.path = metadata['path'] # Save the un-lower-cased path.
     if metadata['is_dir']
       # Only create a folder if there isn't one there already.
       node.content = {} if not node.folder?

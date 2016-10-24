@@ -32,7 +32,7 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.const_set("API_SERVER", "www.v.dropbox.com")
     begin
       @client.metadata('/')
-    rescue  DropboxError => e
+    rescue DropboxError => e
     end
     assert("#{e}".include? "SSL error")
   end
@@ -46,7 +46,7 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.const_set("API_SERVER", "www.digicert.com")
     begin
       @client.metadata('/')
-    rescue  DropboxError => e
+    rescue DropboxError => e
     end
     assert(!("#{e}".include? "SSL error"))
   end
@@ -60,7 +60,7 @@ class SSLTest < Test::Unit::TestCase
     Dropbox.const_set("API_SERVER", "twitter.com")
     begin
       @client.metadata('/')
-    rescue  DropboxError => e
+    rescue DropboxError => e
     end
     assert("#{e}".include? "SSL error")
   end

@@ -95,7 +95,7 @@ module Dropbox # :nodoc:
     end
 
     #We use this to better understand how developers are using our SDKs.
-    request['User-Agent'] =  "OfficialDropboxRubySDK/#{Dropbox::SDK_VERSION}"
+    request['User-Agent'] = "OfficialDropboxRubySDK/#{Dropbox::SDK_VERSION}"
 
     begin
       http.request(request)
@@ -119,7 +119,7 @@ module Dropbox # :nodoc:
         raise DropboxError.new("Dropbox Server Error: body=#{response.body}", response)
       end
       if d['user_error'] && d['error']
-        raise DropboxError.new(d['error'], response, d['user_error'])  #user_error is translated
+        raise DropboxError.new(d['error'], response, d['user_error']) #user_error is translated
       elsif d['error']
         raise DropboxError.new(d['error'], response)
       else
@@ -179,7 +179,7 @@ class DropboxSessionBase # :nodoc:
 
   public
 
-  def do_get(path, params=nil, server=:api)  # :nodoc:
+  def do_get(path, params=nil, server=:api) # :nodoc:
     params ||= {}
     assert_authorized
     uri = build_url_with_params(path, params, server)
@@ -208,7 +208,7 @@ class DropboxSessionBase # :nodoc:
     do_http(uri, request)
   end
 
-  def do_post(path, params=nil, headers=nil, server=:api)  # :nodoc:
+  def do_post(path, params=nil, headers=nil, server=:api) # :nodoc:
     params ||= {}
     assert_authorized
     uri = build_url(path, server)
@@ -216,7 +216,7 @@ class DropboxSessionBase # :nodoc:
     do_http_with_body(uri, Net::HTTP::Post.new(uri.request_uri, headers), params)
   end
 
-  def do_put(path, params=nil, headers=nil, body=nil, server=:api)  # :nodoc:
+  def do_put(path, params=nil, headers=nil, body=nil, server=:api) # :nodoc:
     params ||= {}
     assert_authorized
     uri = build_url_with_params(path, params, server)
@@ -227,7 +227,7 @@ end
 # DropboxSession is responsible for holding OAuth 1 information.  It knows how to take your consumer key and secret
 # and request an access token, an authorize url, and get an access token.  You just need to pass it to
 # DropboxClient after its been authorized.
-class DropboxSession < DropboxSessionBase  # :nodoc:
+class DropboxSession < DropboxSessionBase # :nodoc:
   # * consumer_key - Your Dropbox application's "app key".
   # * consumer_secret - Your Dropbox application's "app secret".
   def initialize(consumer_key, consumer_secret, locale=nil)
@@ -262,7 +262,7 @@ class DropboxSession < DropboxSessionBase  # :nodoc:
 
   protected
 
-  def sign_request(request)  # :nodoc:
+  def sign_request(request) # :nodoc:
     request.add_field('Authorization', build_auth_header(@access_token))
   end
 
@@ -345,7 +345,7 @@ class DropboxSession < DropboxSessionBase  # :nodoc:
       raise RuntimeError.new("No request token. You must set this or get an authorize url first.")
     end
 
-    @access_token = get_token("/access_token", @request_token,  "Couldn't get access token.")
+    @access_token = get_token("/access_token", @request_token, "Couldn't get access token.")
   end
 
   # If we have an access token, then do nothing.  If not, throw a RuntimeError.
@@ -393,7 +393,7 @@ class DropboxSession < DropboxSessionBase  # :nodoc:
 end
 
 
-class DropboxOAuth2Session < DropboxSessionBase  # :nodoc:
+class DropboxOAuth2Session < DropboxSessionBase # :nodoc:
   def initialize(oauth2_access_token, locale=nil)
     super(locale)
     if not oauth2_access_token.is_a?(String)
@@ -408,13 +408,13 @@ class DropboxOAuth2Session < DropboxSessionBase  # :nodoc:
 
   protected
 
-  def sign_request(request)  # :nodoc:
+  def sign_request(request) # :nodoc:
     request.add_field('Authorization', 'Bearer ' + @access_token)
   end
 end
 
 # Base class for the two OAuth 2 authorization helpers.
-class DropboxOAuth2FlowBase  # :nodoc:
+class DropboxOAuth2FlowBase # :nodoc:
   def initialize(consumer_key, consumer_secret, locale=nil)
     if not consumer_key.is_a?(String)
       raise ArgumentError, "consumer_key must be a String, got #{consumer_key.inspect}"
@@ -732,7 +732,7 @@ class DropboxClient
       raise ArgumentError.new("oauth2_access_token doesn't have a valid type")
     end
 
-    @root = root.to_s  # If they passed in a symbol, make it a string
+    @root = root.to_s # If they passed in a symbol, make it a string
 
     if not ["dropbox","app_folder","auto"].include?(@root)
       raise ArgumentError.new("root must be :dropbox, :app_folder, or :auto")
@@ -912,7 +912,7 @@ class DropboxClient
     end
   end
 
-  def commit_chunked_upload(to_path, upload_id, overwrite=false, parent_rev=nil)  #:nodoc
+  def commit_chunked_upload(to_path, upload_id, overwrite=false, parent_rev=nil) #:nodoc
     path = "/commit_chunked_upload/#{@root}#{format_path(to_path)}"
     params = {'overwrite' => overwrite.to_s,
               'upload_id' => upload_id,
@@ -922,7 +922,7 @@ class DropboxClient
     @session.do_post path, params, headers, :content
   end
 
-  def partial_chunked_upload(data, upload_id=nil, offset=nil)  #:nodoc
+  def partial_chunked_upload(data, upload_id=nil, offset=nil) #:nodoc
     params = {
       'upload_id' => upload_id,
       'offset' => offset,
@@ -1467,7 +1467,7 @@ class DropboxClient
   end
 
   #From the oauth spec plus "/".  Slash should not be ecsaped
-  RESERVED_CHARACTERS = /[^a-zA-Z0-9\-\.\_\~\/]/  # :nodoc:
+  RESERVED_CHARACTERS = /[^a-zA-Z0-9\-\.\_\~\/]/ # :nodoc:
 
   def format_path(path, escape=true) # :nodoc:
     path = path.gsub(/\/+/,"/")

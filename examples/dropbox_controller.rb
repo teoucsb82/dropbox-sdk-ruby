@@ -51,7 +51,7 @@ class DropboxController < ApplicationController
       resp = client.put_file(params[:file].original_filename, params[:file].read)
       render :text => "Upload successful.  File now at #{resp['path']}"
     rescue DropboxAuthError => e
-      session.delete(:access_token)  # An auth error means the access token is probably bad
+      session.delete(:access_token) # An auth error means the access token is probably bad
       logger.info "Dropbox auth error: #{e}"
       render :text => "Dropbox auth error"
     rescue DropboxError => e
