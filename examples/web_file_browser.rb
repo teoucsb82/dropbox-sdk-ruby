@@ -73,9 +73,7 @@ end
 
 # If we already have an authorized DropboxSession, returns a DropboxClient.
 def get_dropbox_client
-  if session[:access_token]
-    return DropboxClient.new(session[:access_token])
-  end
+  return DropboxClient.new(session[:access_token]) if session[:access_token]
 end
 
 # -------------------------------------------------------------------
@@ -84,9 +82,7 @@ end
 get '/' do
   # Get the DropboxClient object.  Redirect to OAuth flow if necessary.
   client = get_dropbox_client
-  unless client
-    redirect url("/dropbox-auth-start")
-  end
+  redirect url("/dropbox-auth-start") unless client
 
   # Call DropboxClient.metadata
   path = params[:path] || '/'
@@ -123,7 +119,7 @@ def render_folder(client, entry)
   entry['contents'].each do |child|
     cp = child['path']      # child path
     cn = File.basename(cp)  # child name
-    if (child['is_dir']) then cn += '/' end
+    cn += '/' if (child['is_dir'])
     out += "<div><a style='text-decoration: none' href='/?path=#{h cp}'>#{h cn}</a></div>"
   end
 

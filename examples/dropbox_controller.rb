@@ -29,9 +29,7 @@ APP_SECRET = ""
 class DropboxController < ApplicationController
   def main
     client = get_dropbox_client
-    unless client
-      redirect_to(action: 'auth_start') && (return)
-    end
+    redirect_to(action: 'auth_start') && (return) unless client
 
     account_info = client.account_info
 
@@ -41,9 +39,7 @@ class DropboxController < ApplicationController
 
   def upload
     client = get_dropbox_client
-    unless client
-      redirect_to(action: 'auth_start') && (return)
-    end
+    redirect_to(action: 'auth_start') && (return) unless client
 
     begin
       # Upload the POST'd file to Dropbox, keeping the same name

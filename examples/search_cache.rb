@@ -126,9 +126,7 @@ def command_update(args)
       apply_delta(tree, delta_entry)
     end
     cursor = result['cursor']
-    if not result['has_more']
-      break
-    end
+    break if not result['has_more']
   end
 
   # Save state
@@ -203,9 +201,7 @@ def apply_delta(root, e)
     branch.each do |part|
       node = get_or_create_child(children, part)
       # If there's no folder here, make an empty one.
-      if not node.folder?
-        node.content = {}
-      end
+      node.content = {} if not node.folder?
       children = node.content
     end
 
@@ -234,17 +230,13 @@ def apply_delta(root, e)
       children = node.content
     end
     # If we made it all the way, delete the file/folder.
-    if not missing_parent
-      children.delete(leaf)
-    end
+    children.delete(leaf) if not missing_parent
   end
 end
 
 def get_or_create_child(children, name)
   child = children[name]
-  if child == nil
-    children[name] = child = Node.new(nil, nil)
-  end
+  children[name] = child = Node.new(nil, nil) if child == nil
   child
 end
 
@@ -282,9 +274,7 @@ def command_reset(args)
 
   # Delete cursor, empty tree.
   state = load_state()
-  if state.has_key?('cursor')
-    state.delete('cursor')
-  end
+  state.delete('cursor') if state.has_key?('cursor')
   state['tree'] = {}
   save_state(state)
 end
@@ -303,9 +293,7 @@ def search_tree(results, tree, term)
         results.push("#{path}  (#{size}, #{modified})")
       end
     end
-    if node.folder?
-      search_tree(results, node.content, term)
-    end
+    search_tree(results, node.content, term) if node.folder?
   end
 end
 

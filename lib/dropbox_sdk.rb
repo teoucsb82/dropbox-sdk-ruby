@@ -296,12 +296,8 @@ class DropboxSession < DropboxSessionBase # :nodoc:
     get_request_token()
 
     url = "/#{Dropbox::API_VERSION}/oauth/authorize?oauth_token=#{URI.escape(@request_token.key)}"
-    if callback
-      url += "&oauth_callback=#{URI.escape(callback)}"
-    end
-    if @locale
-      url += "&locale=#{URI.escape(@locale)}"
-    end
+    url += "&oauth_callback=#{URI.escape(callback)}" if callback
+    url += "&locale=#{URI.escape(@locale)}" if @locale
 
     "https://#{Dropbox::WEB_SERVER}#{url}"
   end
@@ -367,9 +363,7 @@ class DropboxSession < DropboxSessionBase # :nodoc:
   # access_token is only included if it already exists in the DropboxSesssion
   def serialize
     toreturn = []
-    if @access_token
-      toreturn.push @access_token.secret, @access_token.key
-    end
+    toreturn.push @access_token.secret, @access_token.key if @access_token
 
     get_request_token
 
@@ -385,9 +379,7 @@ class DropboxSession < DropboxSessionBase # :nodoc:
     session = DropboxSession.new(ser.pop, ser.pop)
     session.set_request_token(ser.pop, ser.pop)
 
-    if ser.length > 0
-      session.set_access_token(ser.pop, ser.pop)
-    end
+    session.set_access_token(ser.pop, ser.pop) if ser.length > 0
     session
   end
 end
@@ -451,9 +443,7 @@ class DropboxOAuth2FlowBase # :nodoc:
   # Finish the OAuth 2 authorization process.  If you used a redirect_uri, pass that in.
   # Will return an access token string that you can use with DropboxClient.
   def _finish(code, original_redirect_uri)
-    if not code.is_a?(String)
-      raise ArgumentError, "code must be a String"
-    end
+    raise ArgumentError, "code must be a String" if not code.is_a?(String)
 
     uri = URI.parse("https://#{Dropbox::API_SERVER}/1/oauth2/token")
     request = Net::HTTP::Post.new(uri.request_uri)
@@ -560,9 +550,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
 
     csrf_token = SecureRandom.base64(16)
     state = csrf_token
-    unless url_state.nil?
-      state += "|" + url_state
-    end
+    state += "|" + url_state unless url_state.nil?
     @session[@csrf_token_session_key] = csrf_token
 
     return _get_authorize_url(@redirect_uri, state)
@@ -585,9 +573,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
     # Check well-formedness of request.
 
     state = query_params['state']
-    if state.nil?
-      raise BadRequestError.new("Missing query parameter 'state'.")
-    end
+    raise BadRequestError.new("Missing query parameter 'state'.") if state.nil?
 
     error = query_params['error']
     error_description = query_params['error_description']
@@ -636,9 +622,7 @@ class DropboxOAuth2Flow < DropboxOAuth2FlowBase
       else
         # All other errors.
         full_message = error
-        if not error_description.nil?
-          full_message += ": " + error_description
-        end
+        full_message += ": " + error_description if not error_description.nil?
         raise ProviderError.new(full_message)
       end
     end
@@ -725,9 +709,7 @@ class DropboxClient
     elsif oauth2_access_token.is_a?(DropboxSession)
       @session = oauth2_access_token
       @session.get_access_token
-      if not locale.nil?
-        @session.locale = locale
-      end
+      @session.locale = locale if not locale.nil?
     else
       raise ArgumentError.new("oauth2_access_token doesn't have a valid type")
     end
@@ -851,9 +833,7 @@ class DropboxClient
       last_chunk = nil
 
       while @offset < @total_size
-        if not last_chunk
-          last_chunk = @file_obj.read(chunk_size)
-        end
+        last_chunk = @file_obj.read(chunk_size) if not last_chunk
 
         resp = {}
         begin

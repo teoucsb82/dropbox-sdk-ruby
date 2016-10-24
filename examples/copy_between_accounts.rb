@@ -138,9 +138,7 @@ def save_state(state)
 end
 
 def load_state()
-  if not FileTest.exists?(STATE_FILE)
-    return {}
-  end
+  return {} if not FileTest.exists?(STATE_FILE)
   JSON.parse(File.read(STATE_FILE))
 end
 

@@ -281,9 +281,7 @@ class SDKTest < Test::Unit::TestCase
           entries.add path_lc
         end
       }
-      if not r['has_more']
-        break
-      end
+      break if not r['has_more']
       cursor = r['cursor']
     end
 
@@ -301,9 +299,7 @@ class SDKTest < Test::Unit::TestCase
         assert(md != nil) # we should never get deletes
         entries.add path_lc
       }
-      if not r['has_more']
-        break
-      end
+      break if not r['has_more']
       cursor = r['cursor']
     end
 
