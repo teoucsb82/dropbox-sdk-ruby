@@ -48,7 +48,7 @@ class SDKTest < Test::Unit::TestCase
   end
 
   def open_binary(filename)
-    File.open(filename, 'rb') { |io| io.read }
+    File.open(filename, 'rb', &:read)
   end
 
   def upload(filename, path, overwrite = false, parent_rev = nil)
@@ -269,7 +269,7 @@ class SDKTest < Test::Unit::TestCase
     c_lc = c.downcase
 
     # /delta on everything
-    expected = Set.new [prefix, a, b, c, c_1, c_2].map {|p| p.downcase}
+    expected = Set.new [prefix, a, b, c, c_1, c_2].map(&:downcase)
     entries = Set.new
     cursor = nil
     while true
@@ -288,7 +288,7 @@ class SDKTest < Test::Unit::TestCase
     assert_equal(expected, entries)
 
     # /delta where path_prefix=c
-    expected = Set.new [c, c_1, c_2].map {|p| p.downcase}
+    expected = Set.new [c, c_1, c_2].map(&:downcase)
     entries = Set.new
     cursor = nil
     while true

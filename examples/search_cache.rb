@@ -166,7 +166,7 @@ class Node
 
   def self.to_json_content(content)
     if content.is_a? Hash
-      map_hash_values(content) { |child| child.to_json }
+      map_hash_values(content, &:to_json)
     else
       content
     end
