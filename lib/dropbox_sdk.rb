@@ -428,7 +428,7 @@ class DropboxOAuth2FlowBase # :nodoc:
       'response_type' => 'code',
       'redirect_uri' => redirect_uri,
       'state' => state,
-      'locale' => @locale,
+      'locale' => @locale
     }
 
     host = Dropbox::WEB_SERVER
@@ -454,7 +454,7 @@ class DropboxOAuth2FlowBase # :nodoc:
       'grant_type' => 'authorization_code',
       'code' => code,
       'redirect_uri' => original_redirect_uri,
-      'locale' => @locale,
+      'locale' => @locale
     }
 
     request.set_form_data(Dropbox::clean_params(params))
@@ -792,7 +792,7 @@ class DropboxClient
     path = "/files_put/#{@root}#{format_path(to_path)}"
     params = {
       'overwrite' => overwrite.to_s,
-      'parent_rev' => parent_rev,
+      'parent_rev' => parent_rev
     }
 
     headers = {'Content-Type' => 'application/octet-stream'}
@@ -904,7 +904,7 @@ class DropboxClient
   def partial_chunked_upload(data, upload_id = nil, offset = nil) #:nodoc
     params = {
       'upload_id' => upload_id,
-      'offset' => offset,
+      'offset' => offset
     }
     headers = {'Content-Type' => 'application/octet-stream'}
     @session.do_put '/chunked_upload', params, headers, data, :content
@@ -950,7 +950,7 @@ class DropboxClient
   def get_file_impl(from_path, rev = nil) # :nodoc:
     path = "/files/#{@root}#{format_path(from_path)}"
     params = {
-      'rev' => rev,
+      'rev' => rev
     }
     @session.do_get path, params, :content
   end
@@ -993,7 +993,7 @@ class DropboxClient
     params = {
       'root' => @root,
       'from_path' => format_path(from_path, false),
-      'to_path' => format_path(to_path, false),
+      'to_path' => format_path(to_path, false)
     }
     response = @session.do_post '/fileops/copy', params
     Dropbox::parse_response(response)
@@ -1011,7 +1011,7 @@ class DropboxClient
   def file_create_folder(path)
     params = {
       'root' => @root,
-      'path' => format_path(path, false),
+      'path' => format_path(path, false)
     }
     response = @session.do_post '/fileops/create_folder', params
 
@@ -1030,7 +1030,7 @@ class DropboxClient
   def file_delete(path)
     params = {
       'root' => @root,
-      'path' => format_path(path, false),
+      'path' => format_path(path, false)
     }
     response = @session.do_post '/fileops/delete', params
     Dropbox::parse_response(response)
@@ -1051,7 +1051,7 @@ class DropboxClient
     params = {
       'root' => @root,
       'from_path' => format_path(from_path, false),
-      'to_path' => format_path(to_path, false),
+      'to_path' => format_path(to_path, false)
     }
     response = @session.do_post '/fileops/move', params
     Dropbox::parse_response(response)
@@ -1301,7 +1301,7 @@ class DropboxClient
   def delta(cursor = nil, path_prefix = nil)
     params = {
       'cursor' => cursor,
-      'path_prefix' => path_prefix,
+      'path_prefix' => path_prefix
     }
 
     response = @session.do_post '/delta', params

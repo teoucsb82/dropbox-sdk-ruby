@@ -63,7 +63,7 @@ def command_link(args)
   state = load_state()
   state[account_info['uid']] = {
           'access_token' => access_token,
-          'display_name' => account_info['display_name'],
+          'display_name' => account_info['display_name']
   }
 
   if account_info['team']
