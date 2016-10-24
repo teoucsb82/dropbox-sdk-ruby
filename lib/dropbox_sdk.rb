@@ -896,8 +896,7 @@ class DropboxClient
     path = "/commit_chunked_upload/#{@root}#{format_path(to_path)}"
     params = {'overwrite' => overwrite.to_s,
               'upload_id' => upload_id,
-              'parent_rev' => parent_rev
-    }
+              'parent_rev' => parent_rev}
     headers = nil
     @session.do_post path, params, headers, :content
   end
